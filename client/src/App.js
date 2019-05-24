@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+import { withStyles } from '@material-ui/core/styles';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const styles = {
+  approot: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    minHeight: 'calc(100vh - 32px)'
+    // margin: 0
+  }
+};
+
+class App extends Component {
+  render() {
+    const { children, classes } = this.props;
+
+    return (
+      <div className={classes.approot}>
+        <Header />
+        <div className="">{children}</div>
+        <Footer />
+      </div>
+    );
+  }
 }
 
-export default App;
+export default withStyles(styles)(App);
