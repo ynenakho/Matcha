@@ -25,6 +25,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         picture: action.payload,
+        pictures: [...state.pictures, action.payload],
         loading: false
       };
     case GET_ALL_PICTURES:

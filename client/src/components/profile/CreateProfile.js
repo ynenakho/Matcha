@@ -162,6 +162,7 @@ export class CreateProfile extends Component {
       submitting,
       classes,
       picture,
+      profile,
       pictureFile
     } = this.props;
     let componentName;
@@ -364,7 +365,7 @@ export class CreateProfile extends Component {
         <ManagePictures
           handleCloseModal={this.handleCloseModal}
           open={this.state.open}
-          classes={classes}
+          // classes={classes}
         />
       </div>
     );

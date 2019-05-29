@@ -16,31 +16,14 @@ import * as profileActions from '../../actions/profileActions';
 import { withSnackbar } from 'notistack';
 import { withStyles } from '@material-ui/core/styles';
 
+import PictureDiv from './PictureDiv';
+
 const styles = theme => ({
-  root: {
-    // backgroundColor: 'yellow'
+  dialog: {
+    textAlign: 'center'
   },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+  mainGrid: {
     justifyContent: 'center'
-  },
-  textField: {
-    width: '100%',
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
-  },
-  dense: {
-    marginTop: 16
-  },
-  button: {
-    marginTop: theme.spacing.unit * 2,
-    width: '60%'
   }
 });
 
@@ -53,30 +36,16 @@ class ManagePictures extends React.Component {
     this.props.getAllPictures();
   }
 
-  onSubmit = formValues => {
-    console.log(formValues);
-    const { forgotPassword, handleClose, enqueueSnackbar } = this.props;
-    forgotPassword(
-      formValues,
-      () => {
-        handleClose();
-        enqueueSnackbar(`New password has been sent to ${formValues.email}`, {
-          variant: 'success'
-        });
-      },
-      text =>
-        enqueueSnackbar(text, {
-          variant: 'error'
-        })
-    );
+  onSubmit = () => {
+    console.log(this.props);
   };
 
   renderPictures = () => {
     const { pictures } = this.props;
     return pictures.map(picture => (
-      <div key={picture._id}>
-        <img src={picture.path} alt="" width="200px" />
-      </div>
+      <Grid item xs={12} sm={8} key={picture._id}>
+        <PictureDiv picture={picture} />
+      </Grid>
     ));
   };
 
@@ -92,20 +61,23 @@ class ManagePictures extends React.Component {
         // className={classes.root}
         fullWidth={true}
         maxWidth={'md'}
+        className={classes.dialog}
       >
-        <DialogTitle id="form-dialog-title">Forgot password?</DialogTitle>
+        <DialogTitle id="form-dialog-title">Pictures</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          {/* <DialogContentText>
             Choose a picture that you wanna use as avatar
-          </DialogContentText>
-          {this.renderPictures()}
+          </DialogContentText> */}
+          <Grid container className={classes.mainGrid}>
+            {this.renderPictures()}
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
             Cancel
           </Button>
-          <Button type="submit" color="primary">
-            Submit
+          <Button onClick={() => console.log('Ok clicked')} color="primary">
+            Ok
           </Button>
         </DialogActions>
         {/* </Grid>

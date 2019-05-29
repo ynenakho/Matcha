@@ -67,35 +67,41 @@ exports.uploadPicturePost = (req, res) => {
     _userId: req.user.id,
     path: '/' + req.file.path
   });
-  picture.save((err, picture) => {
-    if (err) return res.status(500).send({ error: err });
-    Profile.findOne({ _userId: req.user.id })
-      .then(profile => {
-        if (!profile) {
-          const newProfile = new Profile({
-            _profilePictureId: picture._id,
-            _userId: req.user.id,
-            numOfPictures: 1
-          });
+  //
+  Profile.findOne({ _userId: req.user.id })
+    .then(profile => {
+      if (!profile) {
+        const newProfile = new Profile({
+          _profilePictureId: picture._id,
+          _userId: req.user.id,
+          numOfPictures: 1
+        });
+        picture.save((err, picture) => {
+          if (err) return res.status(500).send({ error: err });
           newProfile.save(err => {
             if (err) return res.status(500).send({ error: err });
+
             return res.json({ picture });
           });
-        } else if (profile.numOfPictures < 4) {
-          profile._profilePictureId = picture._id;
-          profile.numOfPictures += 1;
+        });
+      } else if (profile.numOfPictures < 5) {
+        profile._profilePictureId = picture._id;
+        profile.numOfPictures += 1;
+        picture.save((err, picture) => {
+          if (err) return res.status(500).send({ error: err });
           profile.save(err => {
             if (err) return res.status(500).send({ error: err });
             return res.json({ picture });
           });
-        } else {
-          return res.status(400).json({
-            error: 'You have reached maximum ammount of pictures uploaded'
-          });
-        }
-      })
-      .catch(err => res.status(500).json({ error: err }));
-  });
+        });
+      } else {
+        return res.status(400).json({
+          error: 'You have reached maximum ammount of pictures uploaded'
+        });
+      }
+    })
+    .catch(err => res.status(500).json({ error: err }));
+  // });
 };
 
 exports.currentProfileGet = (req, res) => {
