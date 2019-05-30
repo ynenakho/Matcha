@@ -27,4 +27,14 @@ module.exports = app => {
     requireAuth,
     profileController.uploadPicturePost
   );
+  app.post(
+    '/api/picture/like/:pictureid/:userid',
+    requireAuth,
+    profileController.likePicturePost
+  );
+  app.post(
+    '/api/picture/delete/:pictureid',
+    requireAuth,
+    profileController.deletePicturePost
+  );
 };
