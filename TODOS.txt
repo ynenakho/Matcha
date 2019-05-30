@@ -1,0 +1,4 @@
+1. when uploading a picture check for type
+2. when deleting a picture -> delete it from folder also
+3. change redirection from /profile to /profile/:id ???
+4. protect pictures from deleting by other users 

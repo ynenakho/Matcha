@@ -22,11 +22,12 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import { withStyles } from '@material-ui/core/styles';
 
-const styles = {
+const styles = theme => ({
   menuButton: {
     marginLeft: -12,
     marginRight: 20
   },
+
   toolbarButtons: {
     marginLeft: 'auto',
     marginRight: -12
@@ -37,9 +38,9 @@ const styles = {
   fullList: {
     width: 'auto'
   }
-};
+});
 
-export class Header extends Component {
+class Header extends Component {
   state = {
     drawerOpen: false
   };
@@ -52,6 +53,7 @@ export class Header extends Component {
 
   sideList = () => {
     const { classes } = this.props;
+
     return (
       <div className={classes.list}>
         <List>
@@ -81,10 +83,17 @@ export class Header extends Component {
 
   renderButtons = () => {
     const { auth, logout } = this.props;
-    if (auth) {
+    if (auth.authenticated && auth.user) {
       return (
         <React.Fragment>
-          <Button component={Link} to="/profile" color="inherit">
+          <Button component={Link} to={`/search`} color="inherit">
+            Search
+          </Button>
+          <Button
+            component={Link}
+            to={`/profile/${auth.user.id}`}
+            color="inherit"
+          >
             Profile
           </Button>
           <Button onClick={() => logout()} color="inherit">
@@ -121,7 +130,7 @@ export class Header extends Component {
               <MenuIcon />
             </IconButton>
             <Button component={Link} to="/" color="inherit">
-              <Typography variant="h6" color="inherit">
+              <Typography variant="h6" color="inherit" noWrap>
                 Matcha
               </Typography>
             </Button>
@@ -146,7 +155,7 @@ export class Header extends Component {
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth.authenticated
+  auth: state.auth
 });
 
 export default compose(

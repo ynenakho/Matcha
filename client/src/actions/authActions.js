@@ -2,8 +2,8 @@ import {
   AUTH_LOADING,
   AUTH_USER,
   AUTH_ERROR,
-  SET_CURRENT_USER,
-  EDIT_USER
+  SET_CURRENT_USER
+  // EDIT_USER
 } from './types';
 import setAuthToken from '../components/common/setAuthToken';
 import axios from 'axios';
@@ -31,7 +31,7 @@ export const editUser = (formValues, success, fail) => dispatch => {
     });
 };
 
-export const setCurrentUser = token => dispatch => {
+export const setCurrentUser = (token, success) => dispatch => {
   dispatch({ type: AUTH_LOADING });
   axios
     .get('/api/current')
@@ -44,6 +44,7 @@ export const setCurrentUser = token => dispatch => {
         type: AUTH_USER,
         payload: token
       });
+      success(response.data.id);
     })
     .catch(e =>
       dispatch({
@@ -87,8 +88,8 @@ export const login = ({ username, password }, success, fail) => dispatch => {
       });
       localStorage.setItem('jwtToken', response.data.token);
       setAuthToken(response.data.token);
-      dispatch(setCurrentUser(response.data.token));
-      success();
+      dispatch(setCurrentUser(response.data.token, success));
+      // success();
     })
     .catch(e => {
       dispatch({

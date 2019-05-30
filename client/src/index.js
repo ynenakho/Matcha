@@ -32,7 +32,7 @@ if (localStorage.jwtToken) {
   } else {
     // Set auth token header auth
     setAuthToken(localStorage.jwtToken);
-    store.dispatch(setCurrentUser(localStorage.jwtToken));
+    store.dispatch(setCurrentUser(localStorage.jwtToken, () => {}));
   }
 }
 

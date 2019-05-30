@@ -4,7 +4,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
+  // DialogContentText,
   DialogTitle,
   Slide,
   Grid
@@ -32,8 +32,8 @@ const Transition = props => {
 };
 
 class ManagePictures extends React.Component {
-  componentWillMount() {
-    this.props.getAllPictures();
+  componentDidMount() {
+    // const { id } = this.props.match.params;
   }
 
   onSubmit = () => {

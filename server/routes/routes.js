@@ -18,9 +18,21 @@ module.exports = app => {
   app.post('/api/user/edit', requireAuth, authController.editUserPost);
 
   // Profile routes
-  app.get('/api/pictures', requireAuth, profileController.getAllPicturesGet);
-  app.get('/api/profile', requireAuth, profileController.currentProfileGet);
-  app.get('/api/picture', requireAuth, profileController.currentPictureGet);
+  app.get(
+    '/api/pictures/:userid',
+    requireAuth,
+    profileController.getAllPicturesGet
+  );
+  app.get(
+    '/api/profile/:userid',
+    requireAuth,
+    profileController.currentProfileGet
+  );
+  app.get(
+    '/api/picture/:userid',
+    requireAuth,
+    profileController.currentPictureGet
+  );
   app.post('/api/profile', requireAuth, profileController.createProfilePost);
   app.post(
     '/api/profile/picture',

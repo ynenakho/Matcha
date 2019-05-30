@@ -63,11 +63,11 @@ export class Login extends Component {
     const { login, history, enqueueSnackbar } = this.props;
     return login(
       formValues,
-      () => {
+      userId => {
         enqueueSnackbar(`Successfully loged in`, {
           variant: 'info'
         });
-        history.push('/profile');
+        history.push(`/profile/${userId}`);
       },
       text =>
         enqueueSnackbar(text, {

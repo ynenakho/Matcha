@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import * as profileActions from '../../actions/profileActions';
+import ManagePictures from './ManagePictures';
 import {
   Grid,
   Avatar,
@@ -39,12 +40,34 @@ const styles = theme => ({
 });
 
 class Profile extends Component {
-  componentDidMount() {
-    this.props.getProfile();
-    this.props.getPicture();
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      open: false
+    };
   }
+
+  componentDidMount() {
+    // NEED TO MAKE MAKE ONE CALL INSTEAD OF TWO TO FIX BUF WITH RENDERING NO PROFILE FOR A SECOND
+    const { id } = this.props.match.params;
+    console.log('handle', id);
+
+    this.props.getProfile(id);
+    this.props.getPicture(id);
+    this.props.getAllPictures(id);
+  }
+
+  handleOpenModal = () => {
+    this.setState({ open: true });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ open: false });
+  };
+
   renderListItem = (text, value) => {
-    const { classes } = this.props;
+    // const { classes } = this.props;
     return (
       <List>
         <ListItem>
@@ -56,29 +79,10 @@ class Profile extends Component {
   };
 
   render() {
-    const { user } = this.props.auth;
-    const { loading, profile, picture, classes, auth } = this.props;
-    if (loading || !profile || !user) {
+    // const { user } = this.props.auth;
+    const { profile, picture, classes, auth } = this.props;
+    if (profile.loading || auth.loading) {
       return <div>Loading...</div>;
-    }
-    if (Object.keys(profile).length === 0 && Object.keys(user).length !== 0) {
-      return (
-        <div>
-          <p>Welcome {user.name}</p>
-          <p>You have not yet setup a profile, please add some info</p>
-          <Button
-            component={Link}
-            to={{
-              pathname: '/create-profile',
-              state: {
-                componentName: 'Create'
-              }
-            }}
-          >
-            Create Profile
-          </Button>
-        </div>
-      );
     } else {
       return (
         <div className={classes.root}>
@@ -101,6 +105,13 @@ class Profile extends Component {
                   className={classes.bigAvatar}
                 />
               )}
+              <Button
+                onClick={this.handleOpenModal}
+                variant="contained"
+                className={classes.button}
+              >
+                Manage Pictures
+              </Button>
               {this.renderListItem('User Name:', auth.user.username)}
               <Divider />
               {this.renderListItem('First Name:', profile.firstName)}
@@ -113,7 +124,10 @@ class Profile extends Component {
               <Divider />
               {this.renderListItem('Bio:', profile.bio)}
               <Divider />
-              {this.renderListItem('Interests', profile.interests.join(', '))}
+              {this.renderListItem(
+                'Interests',
+                profile.interests ? profile.interests.join(', ') : ''
+              )}
               <Divider />
               {this.renderListItem('Rating:', profile.rating)}
               <Button
@@ -143,6 +157,11 @@ class Profile extends Component {
               </Button>
             </Grid>
           </Grid>
+          <ManagePictures
+            handleCloseModal={this.handleCloseModal}
+            open={this.state.open}
+            // classes={classes}
+          />
         </div>
       );
     }

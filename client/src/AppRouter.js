@@ -14,6 +14,7 @@ import PrivateRoute from './components/common/PrivateRoute';
 import Profile from './components/profile/Profile';
 import CreateProfile from './components/profile/CreateProfile';
 import EditUser from './components/profile/EditUser';
+import Search from './components/search/Search';
 
 export class AppRouter extends Component {
   render() {
@@ -26,12 +27,13 @@ export class AppRouter extends Component {
 
           {/* <Route path="/signout" exact component={SignOut} /> */}
           <PrivateRoute path="/user/edit" exact component={EditUser} />
+          <PrivateRoute path="/search" exact component={Search} />
           <PrivateRoute
             path="/create-profile"
             exact
             component={CreateProfile}
           />
-          <PrivateRoute path="/profile" exact component={Profile} />
+          <PrivateRoute path="/profile/:id" exact component={Profile} />
         </App>
       </BrowserRouter>
     );

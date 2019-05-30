@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 export class Landing extends Component {
   render() {
@@ -10,4 +11,9 @@ export class Landing extends Component {
   }
 }
 
-export default Landing;
+const mapStateToProps = state => ({});
+
+export default connect(
+  mapStateToProps,
+  null
+)(Landing);

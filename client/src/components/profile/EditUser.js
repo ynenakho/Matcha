@@ -1,27 +1,27 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { reduxForm, Field, formValueSelector } from 'redux-form';
+import { reduxForm, Field } from 'redux-form';
 import renderTextField from '../common/renderTextField';
 import { withStyles } from '@material-ui/core/styles';
 // import * as profileActions from '../../actions/profileActions';
 import * as authActions from '../../actions/authActions';
 import { withSnackbar } from 'notistack';
 import {
-  Paper,
+  // Paper,
   Typography,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  OutlinedInput,
-  MenuItem,
-  RadioGroup,
-  Radio,
-  FormLabel,
-  Grid,
-  FormControlLabel,
-  Avatar
+  // FormControl,
+  // InputLabel,
+  // Select,
+  // OutlinedInput,
+  // MenuItem,
+  // RadioGroup,
+  // Radio,
+  // FormLabel,
+  Grid
+  // FormControlLabel,
+  // Avatar
 } from '@material-ui/core';
 
 const styles = theme => ({
@@ -79,11 +79,11 @@ const styles = theme => ({
 });
 
 class EditUser extends Component {
-  componentWillMount() {
-    const { history, user } = this.props;
-    if (!user || !Object.keys(user).length) {
-      history.push('/profile');
-    }
+  componentDidMount() {
+    // const { history, user } = this.props;
+    // if (!user || !Object.keys(user).length) {
+    //   history.push('/profile');
+    // }
   }
 
   onSubmit = formValues => {
@@ -105,7 +105,10 @@ class EditUser extends Component {
   };
 
   render() {
-    const { classes, handleSubmit, pristine, submitting } = this.props;
+    const { classes, handleSubmit, pristine, submitting, auth } = this.props;
+    if (auth.loading) {
+      return <div>Loading...</div>;
+    }
     return (
       <div className={classes.root}>
         <Grid container spacing={24} justify="center" alignItems="center">
@@ -165,7 +168,7 @@ class EditUser extends Component {
 const mapStateToProps = state => ({
   // pictureFile: selector(state, 'picture'),
 
-  user: state.auth.user,
+  auth: state.auth,
   initialValues: { ...state.auth.user }
   // auth: state.auth
 });
@@ -199,7 +202,7 @@ export default compose(
     mapStateToProps,
     authActions
   ),
-  reduxForm({ form: 'editUser', validate }),
+  reduxForm({ form: 'editUser', validate, enableReinitialize: true }),
   withStyles(styles),
   withSnackbar
 )(EditUser);

@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { reduxForm, Field, formValueSelector } from 'redux-form';
+import { reduxForm, Field } from 'redux-form';
 import renderTextField from '../common/renderTextField';
 import { withStyles } from '@material-ui/core/styles';
 import * as profileActions from '../../actions/profileActions';
 import ManagePictures from './ManagePictures';
 import { withSnackbar } from 'notistack';
 import {
-  Paper,
+  // Paper,
   Typography,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  OutlinedInput,
-  MenuItem,
+  // FormControl,
+  // InputLabel,
+  // Select,
+  // OutlinedInput,
+  // MenuItem,
   RadioGroup,
   Radio,
-  FormLabel,
+  // FormLabel,
   Grid,
   FormControlLabel,
   Avatar
@@ -101,14 +101,11 @@ export class CreateProfile extends Component {
     };
   }
 
-  componentWillMount() {
-    let componentName = '';
-    if (this.props.location.state)
-      componentName = this.props.location.state.componentName;
-    const { history, profile } = this.props;
-
-    if (!Object.keys(profile).length && componentName !== 'Create') {
-      history.push('/profile');
+  componentDidMount() {
+    const { profile, user } = this.props;
+    if (Object.keys(profile).length === 0 && user) {
+      this.props.getProfile(user.id);
+      this.props.getPicture(user.id);
     }
   }
 
@@ -121,14 +118,14 @@ export class CreateProfile extends Component {
   };
 
   onSubmit = formValues => {
-    const { history, enqueueSnackbar, createProfile } = this.props;
+    const { history, enqueueSnackbar, createProfile, user } = this.props;
     createProfile(
       formValues,
       () => {
         enqueueSnackbar(`Profile updated`, {
           variant: 'info'
         });
-        history.push('/profile');
+        history.push(`/profile/${user.id}`);
       },
       text =>
         enqueueSnackbar(text, {
@@ -162,12 +159,15 @@ export class CreateProfile extends Component {
       submitting,
       classes,
       picture,
-      profile,
-      pictureFile
+      profile
+      // pictureFile
     } = this.props;
     let componentName;
     if (this.props.location.state)
       componentName = this.props.location.state.componentName;
+    if (profile.loading) {
+      return <div>Loading...</div>;
+    }
     return (
       <div className={classes.root}>
         <Grid container spacing={24} justify="center" alignItems="center">
@@ -371,7 +371,7 @@ export class CreateProfile extends Component {
     );
   }
 }
-const selector = formValueSelector('createProfile');
+// const selector = formValueSelector('createProfile');
 
 const mapStateToProps = state => ({
   // pictureFile: selector(state, 'picture'),
@@ -382,8 +382,8 @@ const mapStateToProps = state => ({
     interests: state.profile.profile.interests
       ? state.profile.profile.interests.join(', ')
       : ''
-  }
-  // auth: state.auth
+  },
+  user: state.auth.user
 });
 
 const validate = () => {
@@ -397,7 +397,7 @@ export default compose(
     mapStateToProps,
     profileActions
   ),
-  reduxForm({ form: 'createProfile', validate }),
+  reduxForm({ form: 'createProfile', validate, enableReinitialize: true }),
   withStyles(styles),
   withSnackbar
 )(CreateProfile);

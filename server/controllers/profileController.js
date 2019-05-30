@@ -70,7 +70,7 @@ exports.likePicturePost = async (req, res) => {
 
 exports.getAllPicturesGet = async (req, res) => {
   try {
-    const pictures = await Picture.find({ _userId: req.user.id }).lean();
+    const pictures = await Picture.find({ _userId: req.params.userid }).lean();
     if (!pictures) {
       return res.json({ pictures: [] });
     } else {
@@ -182,7 +182,7 @@ exports.uploadPicturePost = (req, res) => {
 
 exports.currentProfileGet = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ _userId: req.user.id });
+    const profile = await Profile.findOne({ _userId: req.params.userid });
     if (!profile) {
       return res.json({ profile: {} });
     }
@@ -194,7 +194,7 @@ exports.currentProfileGet = async (req, res) => {
 
 exports.currentPictureGet = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ _userId: req.user.id });
+    const profile = await Profile.findOne({ _userId: req.params.userid });
     if (!profile) {
       return res.json({ picture: {} });
     } else {
