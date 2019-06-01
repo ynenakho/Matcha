@@ -106,6 +106,15 @@ export class CreateProfile extends Component {
     if (Object.keys(profile).length === 0 && user) {
       this.props.getProfile(user.id);
       this.props.getPicture(user.id);
+      this.props.getAllPictures(user.id);
+    }
+  }
+  componentDidUpdate(prevProps) {
+    const { user } = this.props;
+    if (prevProps.user !== user) {
+      this.props.getProfile(user.id);
+      this.props.getPicture(user.id);
+      this.props.getAllPictures(user.id);
     }
   }
 

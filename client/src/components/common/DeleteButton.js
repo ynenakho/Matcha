@@ -15,7 +15,9 @@ const styles = theme => ({
     // margin: theme.spacing * 2
   },
   button: {
-    color: red[500]
+    '&:hover': {
+      color: red[500]
+    }
   }
   // iconHover: {
   //   margin: theme.spacing(2),
@@ -27,7 +29,10 @@ const styles = theme => ({
 
 const DeleteButton = ({ deletePicture, pictureId, classes }) => {
   return (
-    <IconButton onClick={() => deletePicture(pictureId)}>
+    <IconButton
+      onClick={() => deletePicture(pictureId)}
+      className={classes.button}
+    >
       <DeleteIcon />
     </IconButton>
   );

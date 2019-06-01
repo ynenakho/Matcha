@@ -140,7 +140,7 @@ exports.uploadPicturePost = (req, res) => {
     _userId: req.user.id,
     path: '/' + req.file.path
   });
-  //
+
   Profile.findOne({ _userId: req.user.id })
     .then(profile => {
       if (!profile) {
@@ -177,7 +177,6 @@ exports.uploadPicturePost = (req, res) => {
       }
     })
     .catch(err => res.status(500).json({ error: err }));
-  // });
 };
 
 exports.currentProfileGet = async (req, res) => {
@@ -204,6 +203,18 @@ exports.currentPictureGet = async (req, res) => {
       }
       return res.json({ picture });
     }
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
+};
+
+exports.setAvatarPost = async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ _userId: req.user._id });
+    const picture = await Picture.findById(req.params.pictureid);
+    profile._profilePictureId = req.params.pictureid;
+    profile.save();
+    return res.json({ picture });
   } catch (err) {
     return res.status(500).send({ error: err });
   }
@@ -239,24 +250,3 @@ exports.forgotPasswordPost = (req, res) => {
     })
     .catch(err => res.status(500).send({ error: err }));
 };
-
-// exports.getAllPicturesGet = (req, res) => {
-//   Picture.find({ _userId: req.user.id })
-//     .lean()
-//     .exec(async (err, pictures) => {
-//       if (err) return err => res.status(500).send({ error: err });
-//       if (!pictures) {
-//         return res.json({ pictures: [] });
-//       } else {
-//         for (let i = 0; i < pictures.length; i++) {
-//           const likes = await Like.find({ _pictureId: pictures[i]._id });
-//           if (!likes.length) {
-//             pictures[i].likes = [];
-//           } else {
-//             pictures[i].likes = likes;
-//           }
-//         }
-//         return res.json({ pictures });
-//       }
-//     });
-// };

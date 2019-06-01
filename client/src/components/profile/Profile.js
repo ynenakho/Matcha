@@ -48,14 +48,22 @@ class Profile extends Component {
     };
   }
 
-  componentDidMount() {
-    // NEED TO MAKE MAKE ONE CALL INSTEAD OF TWO TO FIX BUF WITH RENDERING NO PROFILE FOR A SECOND
+  _fetchData = () => {
     const { id } = this.props.match.params;
-    console.log('handle', id);
-
     this.props.getProfile(id);
     this.props.getPicture(id);
     this.props.getAllPictures(id);
+  };
+
+  componentDidMount() {
+    // NEED TO MAKE MAKE ONE CALL INSTEAD OF TWO TO FIX BUF WITH RENDERING NO PROFILE FOR A SECOND
+    this._fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this._fetchData();
+    }
   }
 
   handleOpenModal = () => {
@@ -78,9 +86,45 @@ class Profile extends Component {
     );
   };
 
+  _renderButtons = () => {
+    const { classes, match, auth } = this.props;
+    if (match.params.id === auth.user.id) {
+      return (
+        <React.Fragment>
+          <Button
+            variant="outlined"
+            size="medium"
+            color="primary"
+            className={classes.button}
+            component={Link}
+            to={{
+              pathname: '/create-profile',
+              state: {
+                componentName: 'Edit'
+              }
+            }}
+          >
+            Edit Profile
+          </Button>
+          <Button
+            variant="outlined"
+            size="medium"
+            color="primary"
+            className={classes.button}
+            component={Link}
+            to="/user/edit"
+          >
+            Edit User
+          </Button>
+        </React.Fragment>
+      );
+    }
+    return null;
+  };
+
   render() {
     // const { user } = this.props.auth;
-    const { profile, picture, classes, auth } = this.props;
+    const { profile, picture, classes, auth, match } = this.props;
     if (profile.loading || auth.loading) {
       return <div>Loading...</div>;
     } else {
@@ -110,10 +154,10 @@ class Profile extends Component {
                 variant="contained"
                 className={classes.button}
               >
-                Manage Pictures
+                Pictures
               </Button>
-              {this.renderListItem('User Name:', auth.user.username)}
-              <Divider />
+              {/* {this.renderListItem('User Name:', auth.user.username)}
+              <Divider /> */}
               {this.renderListItem('First Name:', profile.firstName)}
               <Divider />
               {this.renderListItem('Last Name:', profile.lastName)}
@@ -130,36 +174,13 @@ class Profile extends Component {
               )}
               <Divider />
               {this.renderListItem('Rating:', profile.rating)}
-              <Button
-                variant="outlined"
-                size="medium"
-                color="primary"
-                className={classes.button}
-                component={Link}
-                to={{
-                  pathname: '/create-profile',
-                  state: {
-                    componentName: 'Edit'
-                  }
-                }}
-              >
-                Edit Profile
-              </Button>
-              <Button
-                variant="outlined"
-                size="medium"
-                color="primary"
-                className={classes.button}
-                component={Link}
-                to="/user/edit"
-              >
-                Edit User
-              </Button>
+              {this._renderButtons()}
             </Grid>
           </Grid>
           <ManagePictures
             handleCloseModal={this.handleCloseModal}
             open={this.state.open}
+            userId={match.params.id}
             // classes={classes}
           />
         </div>

@@ -74,10 +74,7 @@ class ManagePictures extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => console.log('Ok clicked')} color="primary">
-            Ok
+            Close
           </Button>
         </DialogActions>
         {/* </Grid>
@@ -89,6 +86,7 @@ class ManagePictures extends React.Component {
 
 const mapStateToProps = state => ({
   pictures: state.profile.pictures
+  // auth: state.auth
 });
 
 export default compose(

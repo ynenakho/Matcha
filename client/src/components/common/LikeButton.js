@@ -25,9 +25,9 @@ const styles = theme => ({
   // }
 });
 
-const findUserLike = (auth, likes) => {
-  return auth.user &&
-    likes.filter(like => like._userId === auth.user.id).length > 0
+const findUserLike = (user, likes) => {
+  // console.log()
+  return likes.filter(like => like.likedBy === user.id).length > 0
     ? true
     : false;
 };
@@ -37,7 +37,7 @@ const LikeButton = ({ likePicture, auth, picture, classes }) => {
     <IconButton onClick={() => likePicture(picture._id, picture._userId)}>
       <LikeIcon
         className={classnames({
-          [`${classes.button}`]: findUserLike(auth, picture.likes)
+          [`${classes.button}`]: findUserLike(auth.user, picture.likes)
         })}
       />
       {picture.likes.length}

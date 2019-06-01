@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import {
   //   Grid,
   Avatar,
@@ -10,28 +9,49 @@ import {
   ListItemAvatar,
   Divider
 } from '@material-ui/core';
+import { blue } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
-import { compose } from 'redux';
 
 const styles = theme => ({
   inline: {
     display: 'inline'
+  },
+  bigAvatar: {
+    // marginTop: '20px',
+    // marginBottom: '20px',
+    // margin: 'auto',
+    width: 100,
+    height: 100
+  },
+  listItem: {
+    '&:hover': {
+      background: blue[50]
+    },
+    cursor: 'pointer'
   }
 });
 
 class ProfileItem extends Component {
   render() {
-    const { classes } = this.props;
-    console.log(classes);
-
+    const { classes, profile, openProfile } = this.props;
+    console.log(profile);
     return (
       <React.Fragment>
-        <ListItem alignItems="flex-start">
+        <ListItem
+          onClick={() => openProfile(profile._userId)}
+          className={classes.listItem}
+        >
           <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+            <Avatar
+              alt="/img/picture-default.jpg"
+              src={profile.picture}
+              className={classes.bigAvatar}
+            />
           </ListItemAvatar>
           <ListItemText
-            primary="Summer BBQ"
+            primary={`${profile.firstName ? profile.firstName : 'unknown'} ${
+              profile.lastName ? profile.lastName : 'unknown'
+            }`}
             secondary={
               <React.Fragment>
                 <Typography
@@ -40,9 +60,29 @@ class ProfileItem extends Component {
                   className={classes.inline}
                   color="textPrimary"
                 >
-                  to Scott, Alex, Jennifer
+                  Age:
                 </Typography>
-                {" — Wish I could come, but I'm out of town this…"}
+                {' 23'}
+                <br />
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className={classes.inline}
+                  color="textPrimary"
+                >
+                  Interested in:
+                </Typography>
+                {` ${profile.sexPref ? profile.sexPref : 'unknown'}`}
+                <br />
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className={classes.inline}
+                  color="textPrimary"
+                >
+                  Location:
+                </Typography>
+                {` ${profile.location ? profile.location : 'unknown'}`}
               </React.Fragment>
             }
           />
@@ -53,14 +93,4 @@ class ProfileItem extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
-
-// const mapDispatchToProps = {};
-
-export default compose(
-  connect(
-    mapStateToProps
-    // profilesActions
-  ),
-  withStyles(styles)
-)(ProfileItem);
+export default withStyles(styles)(ProfileItem);

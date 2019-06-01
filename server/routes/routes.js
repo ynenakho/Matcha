@@ -1,5 +1,6 @@
 const authController = require('../controllers/authController');
 const profileController = require('../controllers/profileController');
+const profilesController = require('../controllers/profilesController');
 
 const passport = require('passport');
 require('../services/passport');
@@ -28,10 +29,16 @@ module.exports = app => {
     requireAuth,
     profileController.currentProfileGet
   );
+
   app.get(
     '/api/picture/:userid',
     requireAuth,
     profileController.currentPictureGet
+  );
+  app.post(
+    '/api/picture/:pictureid',
+    requireAuth,
+    profileController.setAvatarPost
   );
   app.post('/api/profile', requireAuth, profileController.createProfilePost);
   app.post(
@@ -49,4 +56,7 @@ module.exports = app => {
     requireAuth,
     profileController.deletePicturePost
   );
+
+  // Profiles routes
+  app.get('/api/profiles', requireAuth, profilesController.getProfilesGet);
 };

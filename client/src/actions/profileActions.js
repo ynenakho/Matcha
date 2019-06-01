@@ -99,6 +99,24 @@ export const getPicture = id => dispatch => {
     });
 };
 
+export const makeAvatarPicture = pictureId => dispatch => {
+  dispatch({ type: PROFILE_LOADING });
+  axios
+    .post(`/api/picture/${pictureId}`)
+    .then(response => {
+      dispatch({
+        type: SET_CURRENT_PICTURE,
+        payload: response.data.picture
+      });
+    })
+    .catch(e => {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: e.response.data.error
+      });
+    });
+};
+
 export const createProfile = (formValues, success, fail) => dispatch => {
   dispatch({ type: PROFILE_LOADING });
   axios
