@@ -19,7 +19,7 @@ export const editUser = (formValues, success, fail) => dispatch => {
       });
       localStorage.setItem('jwtToken', response.data.token);
       setAuthToken(response.data.token);
-      dispatch(setCurrentUser(response.data.token));
+      dispatch(setCurrentUser(response.data.token, () => {}));
       success();
     })
     .catch(e => {

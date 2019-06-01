@@ -9,6 +9,7 @@ const profileSchema = new Schema({
   sexPref: { type: String },
   bio: { type: String },
   rating: { type: Number },
+  birthDate: { type: Date },
   location: { type: String },
   interests: { type: Array },
   _profilePictureId: { type: Schema.Types.ObjectId, ref: 'Picture' },

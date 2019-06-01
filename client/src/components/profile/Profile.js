@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
+import moment from 'moment';
 
 const styles = theme => ({
   root: {
@@ -161,6 +162,15 @@ class Profile extends Component {
               {this.renderListItem('First Name:', profile.firstName)}
               <Divider />
               {this.renderListItem('Last Name:', profile.lastName)}
+              <Divider />
+              {this.renderListItem(
+                'Age:',
+                moment().diff(
+                  moment(new Date(profile.birthDate).toISOString()),
+                  'years',
+                  true
+                )
+              )}
               <Divider />
               {this.renderListItem('Gender:', profile.gender)}
               <Divider />

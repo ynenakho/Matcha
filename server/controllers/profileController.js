@@ -97,7 +97,8 @@ exports.createProfilePost = (req, res) => {
     sexPref,
     bio,
     location,
-    interests
+    interests,
+    birthDate
   } = req.body;
   let splittedInterests = [];
 
@@ -116,6 +117,7 @@ exports.createProfilePost = (req, res) => {
       profile.bio = bio;
       profile.location = location;
       profile.interests = splittedInterests;
+      profile.birthDate = birthDate;
     } else {
       profile = new Profile({
         _userId: req.user.id,
@@ -125,6 +127,7 @@ exports.createProfilePost = (req, res) => {
         sexPref,
         bio,
         location,
+        birthDate,
         interests: splittedInterests
       });
     }

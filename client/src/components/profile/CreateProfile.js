@@ -6,6 +6,7 @@ import renderTextField from '../common/renderTextField';
 import { withStyles } from '@material-ui/core/styles';
 import * as profileActions from '../../actions/profileActions';
 import ManagePictures from './ManagePictures';
+// import classNames from 'classnames';
 import { withSnackbar } from 'notistack';
 import {
   // Paper,
@@ -19,6 +20,7 @@ import {
   RadioGroup,
   Radio,
   // FormLabel,
+  // TextField,
   Grid,
   FormControlLabel,
   Avatar
@@ -221,6 +223,17 @@ export class CreateProfile extends Component {
                 classes={classes}
                 label="Last Name"
                 component={renderTextField}
+              />
+              <Field
+                name="birthDate"
+                label="Birthday"
+                type="date"
+                component={renderTextField}
+                classes={classes}
+                // className={classNames(classes.textField, classes.dense)}
+                InputLabelProps={{
+                  shrink: true
+                }}
               />
               <input
                 type="file"
