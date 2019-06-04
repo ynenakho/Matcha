@@ -12,15 +12,12 @@ exports.getProfilesGet = async (req, res) => {
     } else {
       for (let i = 0; i < profiles.length; i++) {
         const picture = await Picture.findById(profiles[i]._profilePictureId);
-        console.log(picture);
         if (!picture) {
           profiles[i].picture = '/images/picture-default.jpg';
         } else {
           profiles[i].picture = picture.path;
         }
       }
-      console.log(profiles);
-      // GET PICTURES FOR PROFILES
       return res.json({ profiles });
     }
   } catch (err) {

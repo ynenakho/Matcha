@@ -1,13 +1,24 @@
-import { AUTH_ERROR, PROFILE_ERROR, PROFILES_ERROR } from '../actions/types';
+import {
+  AUTH_ERROR,
+  PROFILE_ERROR,
+  PROFILES_ERROR,
+  HISTORY_ERROR
+} from '../actions/types';
 
 const INITIAL_STATE = {
   auth: '',
   profile: '',
-  profiles: ''
+  profiles: '',
+  history: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case HISTORY_ERROR:
+      return {
+        ...state,
+        history: action.payload
+      };
     case PROFILES_ERROR:
       return {
         ...state,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { Link } from 'react-router-dom';
 import * as profilesActions from '../../actions/profilesActions';
-// import * as profileActions from '../../actions/profileActions';
+import * as historyActions from '../../actions/historyActions';
 import {
   Grid,
   //   Avatar,
@@ -47,7 +47,11 @@ class Search extends Component {
   };
 
   _openProfile = id => {
-    const { history } = this.props;
+    const { history, auth, saveToHistory } = this.props;
+    if (id !== auth.user.id) {
+      saveToHistory(id);
+      console.log('visited');
+    }
     history.push(`/profile/${id}`);
     console.log('Open profile', id);
   };
@@ -84,7 +88,7 @@ const mapStateToProps = state => ({
 export default compose(
   connect(
     mapStateToProps,
-    profilesActions
+    { ...profilesActions, ...historyActions }
   ),
   withStyles(styles)
 )(Search);

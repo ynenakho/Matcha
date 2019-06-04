@@ -1,6 +1,7 @@
 const authController = require('../controllers/authController');
 const profileController = require('../controllers/profileController');
 const profilesController = require('../controllers/profilesController');
+const historyController = require('../controllers/historyController');
 
 const passport = require('passport');
 require('../services/passport');
@@ -59,4 +60,9 @@ module.exports = app => {
 
   // Profiles routes
   app.get('/api/profiles', requireAuth, profilesController.getProfilesGet);
+
+  //History routes
+  app.post('/api/history', requireAuth, historyController.saveToHistoryPost);
+  app.get('/api/visitors', requireAuth, historyController.visitorsGet);
+  app.get('/api/visited', requireAuth, historyController.visitedGet);
 };

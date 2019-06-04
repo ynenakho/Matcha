@@ -25,6 +25,7 @@ import {
   FormControlLabel,
   Avatar
 } from '@material-ui/core';
+// import moment from 'moment';
 
 const styles = theme => ({
   root: {
@@ -230,6 +231,8 @@ export class CreateProfile extends Component {
                 type="date"
                 component={renderTextField}
                 classes={classes}
+                // dateFormat="DD-MM-YYYY"
+
                 // className={classNames(classes.textField, classes.dense)}
                 InputLabelProps={{
                   shrink: true
@@ -403,7 +406,10 @@ const mapStateToProps = state => ({
     ...state.profile.profile,
     interests: state.profile.profile.interests
       ? state.profile.profile.interests.join(', ')
-      : ''
+      : '',
+    birthDate: state.profile.profile.birthDate
+      ? state.profile.profile.birthDate.slice(0, 10)
+      : null
   },
   user: state.auth.user
 });

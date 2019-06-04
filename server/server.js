@@ -37,6 +37,8 @@ mongoose.connect(keys.mongoURI, { useNewUrlParser: true }, () =>
 );
 mongoose.set('useCreateIndex', true);
 
+app.set('trust proxy', true);
+
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json({ limit: '50mb' }));

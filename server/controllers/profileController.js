@@ -3,6 +3,7 @@ const Profile = require('../models/profileModel');
 const Picture = require('../models/pictureModel');
 const Like = require('../models/likeModel');
 const keys = require('../config/keys');
+const axios = require('axios');
 
 exports.deletePicturePost = async (req, res) => {
   try {
@@ -89,7 +90,7 @@ exports.getAllPicturesGet = async (req, res) => {
   }
 };
 
-exports.createProfilePost = (req, res) => {
+exports.createProfilePost = async (req, res) => {
   const {
     firstName,
     lastName,
@@ -100,8 +101,18 @@ exports.createProfilePost = (req, res) => {
     interests,
     birthDate
   } = req.body;
-  let splittedInterests = [];
 
+  //axios get to lookup ip
+  // let ip = req.ip;
+  // if (ip.substr(0, 7) == '::ffff:') {
+  //   ip = ip.substr(7);
+  // }
+  // console.log(ip);
+
+  // const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
+  // console.log(loc.data);
+
+  let splittedInterests = [];
   if (interests) {
     splittedInterests = interests.split(/[, \n]/);
     splittedInterests = splittedInterests.filter(elem => elem !== '');

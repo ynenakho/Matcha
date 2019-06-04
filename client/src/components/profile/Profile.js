@@ -117,6 +117,16 @@ class Profile extends Component {
           >
             Edit User
           </Button>
+          <Button
+            variant="outlined"
+            size="medium"
+            color="primary"
+            className={classes.button}
+            component={Link}
+            to="/history"
+          >
+            History
+          </Button>
         </React.Fragment>
       );
     }
@@ -126,6 +136,7 @@ class Profile extends Component {
   render() {
     // const { user } = this.props.auth;
     const { profile, picture, classes, auth, match } = this.props;
+
     if (profile.loading || auth.loading) {
       return <div>Loading...</div>;
     } else {
@@ -165,11 +176,9 @@ class Profile extends Component {
               <Divider />
               {this.renderListItem(
                 'Age:',
-                moment().diff(
-                  moment(new Date(profile.birthDate).toISOString()),
-                  'years',
-                  true
-                )
+                profile.birthDate
+                  ? moment().diff(moment(new Date(profile.birthDate)), 'years')
+                  : ''
               )}
               <Divider />
               {this.renderListItem('Gender:', profile.gender)}

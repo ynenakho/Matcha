@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { blue } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
+import moment from 'moment';
 
 const styles = theme => ({
   inline: {
@@ -34,7 +35,6 @@ const styles = theme => ({
 class ProfileItem extends Component {
   render() {
     const { classes, profile, openProfile } = this.props;
-    console.log(profile);
     return (
       <React.Fragment>
         <ListItem
@@ -62,7 +62,14 @@ class ProfileItem extends Component {
                 >
                   Age:
                 </Typography>
-                {' 23'}
+                {` ${
+                  profile.birthDate
+                    ? moment().diff(
+                        moment(new Date(profile.birthDate)),
+                        'years'
+                      )
+                    : 'unknown'
+                }`}
                 <br />
                 <Typography
                   component="span"
