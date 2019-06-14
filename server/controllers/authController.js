@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Profile = require('../models/profileModel');
 const VerificationToken = require('../models/veificationTokenModel');
 const keys = require('../config/keys');
 const sgMail = require('@sendgrid/mail');
@@ -18,6 +19,22 @@ exports.currentUserGet = (req, res) => {
     username: req.user.username,
     email: req.user.email
   });
+};
+
+exports.changeOnlineStatusPatch = async (req, res) => {
+  const { status } = req.body;
+  try {
+    const profile = await Profile.findOne({ _userId: req.user._id });
+    if (!profile) {
+      return res.status(400).json({ error: 'Profile not created yet' });
+    } else {
+      profile.lastVisit = status;
+      profile.save();
+      return res.json({ status });
+    }
+  } catch (e) {
+    res.status(500).send({ error: e });
+  }
 };
 
 exports.editUserPost = async (req, res) => {

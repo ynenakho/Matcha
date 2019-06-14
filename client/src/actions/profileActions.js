@@ -140,7 +140,7 @@ export const createProfile = (formValues, success, fail) => dispatch => {
 export const uploadPicture = (data, success, fail) => dispatch => {
   // dispatch({ type: PROFILE_LOADING });
   axios
-    .post(`/api/profile/picture`, data)
+    .post(`/api/upload-picture`, data)
     .then(response => {
       dispatch({
         type: UPLOAD_PICTURE,

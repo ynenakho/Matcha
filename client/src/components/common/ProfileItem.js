@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import {
-  //   Grid,
   Avatar,
   Typography,
-  //   Button,
   ListItem,
   ListItemText,
   ListItemAvatar,
@@ -18,9 +16,6 @@ const styles = theme => ({
     display: 'inline'
   },
   bigAvatar: {
-    // marginTop: '20px',
-    // marginBottom: '20px',
-    // margin: 'auto',
     width: 100,
     height: 100
   },
@@ -33,12 +28,22 @@ const styles = theme => ({
 });
 
 class ProfileItem extends Component {
+  _openProfile = id => {
+    const { history, auth, saveToHistory } = this.props;
+    if (id !== auth.user.id) {
+      saveToHistory(id);
+      console.log('visited');
+    }
+    history.push(`/profile/${id}`);
+    console.log('Open profile', id);
+  };
+
   render() {
-    const { classes, profile, openProfile } = this.props;
+    const { classes, profile, auth } = this.props;
     return (
       <React.Fragment>
         <ListItem
-          onClick={() => openProfile(profile._userId)}
+          onClick={() => this._openProfile(profile._userId)}
           className={classes.listItem}
         >
           <ListItemAvatar>
@@ -90,9 +95,26 @@ class ProfileItem extends Component {
                   Location:
                 </Typography>
                 {` ${profile.location ? profile.location : 'unknown'}`}
+                <br />
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className={classes.inline}
+                  color="textPrimary"
+                >
+                  Status:
+                </Typography>
+                {` ${profile.lastVisit ? profile.lastVisit : 'unknown'}`}
               </React.Fragment>
             }
           />
+          {profile.visitedAt
+            ? `Visited at:
+             ${moment(new Date(profile.visitedAt)).format(
+               'hh:mm a MM/DD/YYYY'
+             )}`
+            : null}
+          {profile._userId === auth.user.id ? 'This is your profile' : null}
         </ListItem>
         <Divider variant="inset" component="li" />
       </React.Fragment>

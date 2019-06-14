@@ -1,4 +1,8 @@
-import { GET_ALL_PROFILES, LOADING_PROFILES } from '../actions/types';
+import {
+  GET_ALL_PROFILES,
+  LOADING_PROFILES,
+  SEARCH_PROFILES
+} from '../actions/types';
 
 const INITIAL_STATE = {
   profiles: [],
@@ -13,6 +17,12 @@ export default (state = INITIAL_STATE, action) => {
         loading: true
       };
     case GET_ALL_PROFILES:
+      return {
+        ...state,
+        profiles: action.payload,
+        loading: false
+      };
+    case SEARCH_PROFILES:
       return {
         ...state,
         profiles: action.payload,

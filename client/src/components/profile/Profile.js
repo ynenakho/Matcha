@@ -35,7 +35,7 @@ const styles = theme => ({
     justifyContent: 'space-between'
   },
   button: {
-    margin: theme.spacing.unit * 2
+    margin: theme.spacing(2)
     // width: '60%'
   }
 });

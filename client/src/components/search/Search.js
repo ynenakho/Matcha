@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { Link } from 'react-router-dom';
 import * as profilesActions from '../../actions/profilesActions';
+import * as profileActions from '../../actions/profileActions';
 import * as historyActions from '../../actions/historyActions';
 import {
   Grid,
   //   Avatar,
-  //   Typography,
+  Typography,
   //   Button,
   List
   //   ListItem,
@@ -15,7 +16,9 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
-import ProfileItem from './ProfileItem';
+import ProfileItem from '../common/ProfileItem';
+import SearchBar from './SearchBar';
+import SortBar from './SortBar';
 
 const styles = theme => ({
   root: {
@@ -32,28 +35,54 @@ const styles = theme => ({
 
 class Search extends Component {
   componentDidMount() {
-    const { getProfiles } = this.props;
-    getProfiles();
+    const { getProfiles, getProfile, auth, profile } = this.props;
+    if (auth.user) {
+      getProfile(auth.user.id);
+    }
+    if (profile._userId) {
+      if (!profile.sexPref) {
+        getProfiles('bisexual');
+      } else {
+        getProfiles(profile.sexPref);
+      }
+    }
   }
+
+  componentDidUpdate(prevProps) {
+    const { getProfile, getProfiles, auth, profile } = this.props;
+    if (prevProps.auth.user !== auth.user) {
+      getProfile(auth.user.id);
+    }
+    if (prevProps.profile !== profile) {
+      if (!profile.sexPref) {
+        getProfiles('bisexual');
+      } else {
+        getProfiles(profile.sexPref);
+      }
+    }
+  }
+
+  _searchProfiles = values => {
+    const { searchProfiles } = this.props;
+    console.log('Search by age', values);
+    searchProfiles(values);
+  };
+
+  _sortProfiles = sortValues => {
+    const { sortProfiles, profiles } = this.props;
+    console.log('Sort By', sortValues);
+  };
 
   _renderSearchItems = profiles => {
     return profiles.map(profile => (
       <ProfileItem
         key={profile._id}
         profile={profile}
-        openProfile={this._openProfile}
+        saveToHistory={this.props.saveToHistory}
+        auth={this.props.auth}
+        history={this.props.history}
       />
     ));
-  };
-
-  _openProfile = id => {
-    const { history, auth, saveToHistory } = this.props;
-    if (id !== auth.user.id) {
-      saveToHistory(id);
-      console.log('visited');
-    }
-    history.push(`/profile/${id}`);
-    console.log('Open profile', id);
   };
 
   render() {
@@ -63,9 +92,13 @@ class Search extends Component {
     } else {
       return (
         <div className={classes.root}>
-          <Grid container spacing={24} justify="center">
+          <Grid container justify="center">
             <Grid item xs={12} sm={10} md={8}>
-              <h1>Search</h1>
+              <Typography variant="h4" component="h3" color="primary">
+                Search
+              </Typography>
+              <SearchBar searchProfiles={this._searchProfiles} />
+              <SortBar sortProfiles={this._sortProfiles} />
               <List className={classes.list}>
                 {this._renderSearchItems(profiles.profiles)}
               </List>
@@ -80,15 +113,15 @@ class Search extends Component {
 const mapStateToProps = state => ({
   auth: state.auth,
   // user: state.auth.user,
-  profiles: state.profiles
-  // profile: state.profile.profile
+  profiles: state.profiles,
+  profile: state.profile.profile
   // picture: state.profile.picture
 });
 
 export default compose(
   connect(
     mapStateToProps,
-    { ...profilesActions, ...historyActions }
+    { ...profilesActions, ...historyActions, ...profileActions }
   ),
   withStyles(styles)
 )(Search);

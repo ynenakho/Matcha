@@ -49,11 +49,11 @@ const styles = theme => ({
     marginTop: 16
   },
   button: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing(2)
     // width: '60%'
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     minWidth: 120
   },
   radio: {
@@ -68,7 +68,7 @@ const styles = theme => ({
   fileUpload: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing(2)
     // float: 'right'
   },
   bigAvatar: {
@@ -87,7 +87,7 @@ class EditUser extends Component {
   }
 
   onSubmit = formValues => {
-    const { editUser, history, enqueueSnackbar } = this.props;
+    const { editUser, history, enqueueSnackbar, auth } = this.props;
     console.log(formValues);
     editUser(
       formValues,
@@ -95,7 +95,7 @@ class EditUser extends Component {
         enqueueSnackbar(`User updated`, {
           variant: 'info'
         });
-        history.push('/profile');
+        history.push(`/profile/${auth.user.id}`);
       },
       text =>
         enqueueSnackbar(text, {

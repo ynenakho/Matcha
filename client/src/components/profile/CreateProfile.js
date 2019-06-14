@@ -52,11 +52,11 @@ const styles = theme => ({
     marginTop: 16
   },
   button: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing(2)
     // width: '60%'
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     minWidth: 120
   },
   radio: {
@@ -71,7 +71,7 @@ const styles = theme => ({
   fileUpload: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing(2)
     // float: 'right'
   },
   bigAvatar: {
@@ -299,7 +299,7 @@ export class CreateProfile extends Component {
                     label="Male"
                     labelPlacement="start"
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="bisexual"
                     control={<Radio />}
                     label="Bisexual"
@@ -322,7 +322,7 @@ export class CreateProfile extends Component {
                     control={<Radio />}
                     label="Transgender"
                     labelPlacement="start"
-                  />
+                  /> */}
                 </Field>
                 <Field
                   classes={classes}

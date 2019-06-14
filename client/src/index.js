@@ -11,6 +11,7 @@ import AppRouter from './AppRouter';
 
 import setAuthToken from './components/common/setAuthToken';
 import { setCurrentUser, logout } from './actions/authActions';
+// import { changeOnlineStatus } from './actions/authActions';
 import reducers from './reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -33,6 +34,7 @@ if (localStorage.jwtToken) {
     // Set auth token header auth
     setAuthToken(localStorage.jwtToken);
     store.dispatch(setCurrentUser(localStorage.jwtToken, () => {}));
+    // static.dispatch(changeOnlineStatus('online'));
   }
 }
 

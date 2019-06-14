@@ -7,6 +7,19 @@ import {
 } from './types';
 import setAuthToken from '../components/common/setAuthToken';
 import axios from 'axios';
+import moment from 'moment';
+
+export const changeOnlineStatus = status => dispatch => {
+  axios
+    .patch('/api/changeonlinestatus', { status })
+    .then(response => console.log('change status'))
+    .catch(e =>
+      dispatch({
+        type: AUTH_ERROR,
+        payload: e.response.data.error
+      })
+    );
+};
 
 export const editUser = (formValues, success, fail) => dispatch => {
   dispatch({ type: AUTH_LOADING });
@@ -44,6 +57,7 @@ export const setCurrentUser = (token, success) => dispatch => {
         type: AUTH_USER,
         payload: token
       });
+      dispatch(changeOnlineStatus('online'));
       success(response.data.id);
     })
     .catch(e =>
@@ -101,6 +115,13 @@ export const login = ({ username, password }, success, fail) => dispatch => {
 };
 
 export const logout = () => dispatch => {
+  dispatch(
+    changeOnlineStatus(
+      `Last visit ${moment(new Date())
+        .format('MM/DD/YYYY hh:mm a')
+        .toString()}`
+    )
+  );
   localStorage.removeItem('jwtToken');
   setAuthToken(false);
   dispatch({

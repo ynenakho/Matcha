@@ -17,7 +17,7 @@ const styles = theme => ({
     flexGrow: 1
   },
   paper: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary
   },
@@ -28,14 +28,14 @@ const styles = theme => ({
   },
   textField: {
     width: '100%',
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   dense: {
     marginTop: 16
   },
   button: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing(2),
     width: '60%'
   }
 });

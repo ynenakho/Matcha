@@ -44,7 +44,7 @@ app.use(logger('dev'));
 app.use(express.json({ limit: '50mb' }));
 app.use(passport.initialize());
 app.use(multer({ storage: storage, fileFilter: fileFilter }).single('file'));
-app.use('*/images', express.static(path.join(__dirname, '/images')));
+app.use('/images', express.static(path.join(__dirname, '/images')));
 
 routes(app);
 

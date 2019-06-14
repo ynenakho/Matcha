@@ -32,6 +32,12 @@ exports.visitedGet = async (req, res) => {
       const profile = await Profile.findOne({
         _userId: history[i]._userId
       }).lean();
+      const picture = await Picture.findById(profile._profilePictureId);
+      if (!picture) {
+        profile.picture = '/images/picture-default.jpg';
+      } else {
+        profile.picture = picture.path;
+      }
       profile.visitedAt = history[i].createdAt;
       arrProfiles.push(profile);
     }
@@ -51,6 +57,12 @@ exports.visitorsGet = async (req, res) => {
       const profile = await Profile.findOne({
         _userId: history[i].visitedBy
       }).lean();
+      const picture = await Picture.findById(profile._profilePictureId);
+      if (!picture) {
+        profile.picture = '/images/picture-default.jpg';
+      } else {
+        profile.picture = picture.path;
+      }
       profile.visitedAt = history[i].createdAt;
       arrProfiles.push(profile);
     }
