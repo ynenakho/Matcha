@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const Profile = require('../models/profileModel');
 const Picture = require('../models/pictureModel');
+const Connection = require('../models/connectionModel');
 const Like = require('../models/likeModel');
 const keys = require('../config/keys');
 const fs = require('fs');
@@ -8,14 +9,14 @@ const fs = require('fs');
 exports.deletePicturePost = async (req, res) => {
   try {
     const pictureToDelete = await Picture.findById(req.params.pictureid);
-    console.log(pictureToDelete);
     fs.unlink('.' + pictureToDelete.path, err => {
-      if (err) console.log(err);
+      if (err) res.status(500).json({ error: err });
     });
     const deletedPicture = await pictureToDelete.remove();
     const likes = await Like.find({ _pictureId: req.params.pictureid });
     const profile = await Profile.findOne({ _userId: req.user.id });
     profile.numOfPictures -= 1;
+    profile.rating -= 1;
     if (profile._profilePictureId.toString() === req.params.pictureid) {
       profile._profilePictureId = await Picture.findOne({
         _userId: req.user.id
@@ -41,32 +42,101 @@ exports.likePicturePost = async (req, res) => {
       _pictureId: req.params.pictureid,
       likedBy: req.user.id
     });
+    const profile = await Profile.findOne({
+      _userId: req.params.userid
+    });
+    let connection;
+    let allLikes = [];
+    let allLikesBack = [];
     if (!existingLike) {
       const like = new Like({
         _userId: req.params.userid,
         _pictureId: req.params.pictureid,
         likedBy: req.user.id
       });
+      profile.rating += 1;
+      profile.save();
       const savedLike = await like.save();
-      const allLikes = await Like.find({
+      allLikes = await Like.find({
         _userId: req.user.id,
         likedBy: req.params.userid
       });
-      if (allLikes.length === 1) {
+      if (allLikes.length >= 1) {
         // create connection
+        connection = await Connection.findOne({
+          _userId: req.user.id,
+          connectedTo: req.params.userid
+        });
+        if (!connection && req.params.userid !== req.user.id) {
+          const newConnection = new Connection({
+            _userId: req.user.id,
+            connectedTo: req.params.userid
+          });
+          newConnection.save(err => {
+            if (err)
+              return res.status(500).json({ error: 'Couldnt save connection' });
+          });
+          const newConnectionBack = new Connection({
+            _userId: req.params.userid,
+            connectedTo: req.user.id
+          });
+          newConnectionBack.save(err => {
+            if (err)
+              return res.status(500).json({ error: 'Couldnt save connection' });
+          });
+        }
       }
-
-      return res.json({ like: savedLike });
+      return res.json({ like: savedLike, connected: true });
     } else {
       const deletedLike = await existingLike.remove();
-      const allLikes = await Like.find({
+      allLikes = await Like.find({
+        _userId: req.params.userid,
+        likedBy: req.user.id
+      });
+      allLikesBack = await Like.find({
         _userId: req.user.id,
         likedBy: req.params.userid
       });
-      if (allLikes.length === 0) {
-        // try to find and remove connections
+      profile.rating -= 1;
+      profile.save();
+      if (
+        (allLikes.length === 0 || allLikesBack.length === 0) &&
+        req.params.userid !== req.user.id
+      ) {
+        connection = await Connection.findOne({
+          _userId: req.user.id,
+          connectedTo: req.params.userid
+        });
+        if (connection) {
+          connection.remove(err => {
+            if (err)
+              return res
+                .status(500)
+                .json({ error: 'Couldnt delete connection' });
+          });
+        }
+        const connectionBack = await Connection.findOne({
+          _userId: req.params.userid,
+          connectedTo: req.user.id
+        });
+        if (connectionBack) {
+          connectionBack.remove(err => {
+            if (err)
+              return res
+                .status(500)
+                .json({ error: 'Couldnt delete connection' });
+          });
+        }
       }
-      return res.json({ like: deletedLike });
+      return res.json({
+        like: deletedLike,
+        connected:
+          allLikes.length &&
+          allLikesBack.length &&
+          req.params.userid !== req.user.id
+            ? true
+            : false
+      });
     }
   } catch (err) {
     res.status(500).send({ error: err });

@@ -68,6 +68,12 @@ module.exports = app => {
   // Profiles routes
   app.get('/api/profiles', requireAuth, profilesController.getProfilesGet);
   app.get(
+    '/api/profiles/blocked',
+    requireAuth,
+    profilesController.blockedProfilesGet
+  );
+  app.post('/api/block/:userid', requireAuth, profilesController.blockUserPost);
+  app.get(
     '/api/profiles/search',
     requireAuth,
     profilesController.searchProfilesGet

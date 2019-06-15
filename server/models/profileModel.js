@@ -8,7 +8,7 @@ const profileSchema = new Schema({
   gender: { type: String },
   sexPref: { type: String },
   bio: { type: String },
-  rating: { type: Number },
+  rating: { type: Number, required: true, default: 0 },
   birthDate: { type: Date },
   location: { type: String },
   interests: { type: Array },
