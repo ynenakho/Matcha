@@ -6,3 +6,4 @@
 + on block delete all likes and connections 
 + return deleted likes after block/disconnect to change redux state
 + on delete picture delete connection if necesary
+- messaging (socket.io)
