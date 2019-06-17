@@ -7,9 +7,54 @@ import {
   SET_CURRENT_PICTURE,
   GET_ALL_PICTURES,
   LIKE_PICTURE,
-  DELETE_PICTURE
+  DELETE_PICTURE,
+  SET_CONNECTION,
+  DELETE_LIKES,
+  REDUCE_RATING
 } from './types';
 import axios from 'axios';
+
+export const disconnectUser = userId => dispatch => {
+  axios
+    .post(`/api/disconnect/${userId}`)
+    .then(response => {
+      dispatch({
+        type: SET_CURRENT_PROFILE,
+        payload: response.data.profile
+      });
+      dispatch({
+        type: DELETE_LIKES,
+        payload: response.data.likes
+      });
+    })
+    .catch(e => {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: e.response.data.error
+      });
+    });
+};
+
+export const blockUser = userId => dispatch => {
+  axios
+    .post(`/api/block/${userId}`)
+    .then(response => {
+      dispatch({
+        type: SET_CURRENT_PROFILE,
+        payload: response.data.profile
+      });
+      dispatch({
+        type: DELETE_LIKES,
+        payload: response.data.likes
+      });
+    })
+    .catch(e => {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: e.response.data.error
+      });
+    });
+};
 
 export const deletePicture = pictureId => dispatch => {
   axios
@@ -18,6 +63,10 @@ export const deletePicture = pictureId => dispatch => {
       dispatch({
         type: DELETE_PICTURE,
         payload: response.data.picture
+      });
+      dispatch({
+        type: REDUCE_RATING,
+        payload: response.data.rating
       });
     })
     .catch(e => {
@@ -32,9 +81,15 @@ export const likePicture = (pictureId, userId) => dispatch => {
   axios
     .post(`/api/picture/like/${pictureId}/${userId}`)
     .then(response => {
+      console.log(response.data);
+
       dispatch({
         type: LIKE_PICTURE,
         payload: response.data.like
+      });
+      dispatch({
+        type: SET_CONNECTION,
+        payload: response.data.connected
       });
     })
     .catch(e => {
@@ -46,7 +101,7 @@ export const likePicture = (pictureId, userId) => dispatch => {
 };
 
 export const getAllPictures = userId => dispatch => {
-  dispatch({ type: PROFILE_LOADING });
+  // dispatch({ type: PROFILE_LOADING });
   axios
     .get(`/api/pictures/${userId}`)
     .then(response => {
@@ -65,13 +120,15 @@ export const getAllPictures = userId => dispatch => {
 
 export const getProfile = id => dispatch => {
   dispatch({ type: PROFILE_LOADING });
-  axios
+
+  return axios
     .get(`/api/profile/${id}`)
     .then(response => {
       dispatch({
         type: SET_CURRENT_PROFILE,
         payload: response.data.profile
       });
+      return response.data.profile;
     })
     .catch(e => {
       dispatch({
@@ -82,7 +139,7 @@ export const getProfile = id => dispatch => {
 };
 
 export const getPicture = id => dispatch => {
-  dispatch({ type: PROFILE_LOADING });
+  // dispatch({ type: PROFILE_LOADING });
   axios
     .get(`/api/picture/${id}`)
     .then(response => {
@@ -100,7 +157,7 @@ export const getPicture = id => dispatch => {
 };
 
 export const makeAvatarPicture = pictureId => dispatch => {
-  dispatch({ type: PROFILE_LOADING });
+  // dispatch({ type: PROFILE_LOADING });
   axios
     .post(`/api/picture/${pictureId}`)
     .then(response => {
@@ -118,7 +175,7 @@ export const makeAvatarPicture = pictureId => dispatch => {
 };
 
 export const createProfile = (formValues, success, fail) => dispatch => {
-  dispatch({ type: PROFILE_LOADING });
+  // dispatch({ type: PROFILE_LOADING });
   axios
     .post('/api/profile', { ...formValues })
     .then(response => {

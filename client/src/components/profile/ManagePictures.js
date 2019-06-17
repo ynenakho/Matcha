@@ -27,9 +27,9 @@ const styles = theme => ({
   }
 });
 
-const Transition = props => {
-  return <Slide direction="up" {...props} />;
-};
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 class ManagePictures extends React.Component {
   componentDidMount() {
@@ -41,10 +41,10 @@ class ManagePictures extends React.Component {
   };
 
   renderPictures = () => {
-    const { pictures } = this.props;
+    const { pictures, blocked } = this.props;
     return pictures.map(picture => (
       <Grid item xs={12} sm={8} key={picture._id}>
-        <PictureDiv picture={picture} />
+        <PictureDiv picture={picture} blocked={blocked} />
       </Grid>
     ));
   };

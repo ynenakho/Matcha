@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import { withStyles } from '@material-ui/core/styles';
+import { Container } from '@material-ui/core';
 
 const styles = {
   approot: {
@@ -20,7 +21,7 @@ class App extends Component {
     return (
       <div className={classes.approot}>
         <Header />
-        <div className="">{children}</div>
+        <Container className="">{children}</Container>
         <Footer />
       </div>
     );

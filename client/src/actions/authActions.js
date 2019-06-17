@@ -1,5 +1,5 @@
 import {
-  AUTH_LOADING,
+  // AUTH_LOADING,
   AUTH_USER,
   AUTH_ERROR,
   SET_CURRENT_USER
@@ -12,7 +12,7 @@ import moment from 'moment';
 export const changeOnlineStatus = status => dispatch => {
   axios
     .patch('/api/changeonlinestatus', { status })
-    .then(response => console.log('change status'))
+    .then()
     .catch(e =>
       dispatch({
         type: AUTH_ERROR,
@@ -22,7 +22,7 @@ export const changeOnlineStatus = status => dispatch => {
 };
 
 export const editUser = (formValues, success, fail) => dispatch => {
-  dispatch({ type: AUTH_LOADING });
+  // dispatch({ type: AUTH_LOADING });
   axios
     .post('/api/user/edit', formValues)
     .then(response => {
@@ -45,7 +45,7 @@ export const editUser = (formValues, success, fail) => dispatch => {
 };
 
 export const setCurrentUser = (token, success) => dispatch => {
-  dispatch({ type: AUTH_LOADING });
+  // dispatch({ type: AUTH_LOADING });
   axios
     .get('/api/current')
     .then(response => {
@@ -89,7 +89,7 @@ export const signup = (
     });
 
 export const login = ({ username, password }, success, fail) => dispatch => {
-  dispatch({ type: AUTH_LOADING });
+  // dispatch({ type: AUTH_LOADING });
   axios
     .post('/api/login', {
       username,

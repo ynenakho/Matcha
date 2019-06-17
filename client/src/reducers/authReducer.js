@@ -8,7 +8,7 @@ import {
 const INITIAL_STATE = {
   authenticated: '',
   user: {},
-  loading: false
+  loading: true
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -21,8 +21,8 @@ export default (state = INITIAL_STATE, action) => {
     case AUTH_USER:
       return {
         ...state,
-        authenticated: action.payload,
-        loading: false
+        authenticated: action.payload
+        // loading: false
       };
     case SET_CURRENT_USER:
       return {
@@ -33,8 +33,8 @@ export default (state = INITIAL_STATE, action) => {
     case EDIT_USER:
       return {
         ...state,
-        user: action.payload,
-        loading: false
+        user: action.payload
+        // loading: false
       };
     default:
       return state;

@@ -64,6 +64,12 @@ module.exports = app => {
     profileController.currentProfileGet
   );
   app.post('/api/profile', requireAuth, profileController.createProfilePost);
+  app.post('/api/block/:userid', requireAuth, profileController.blockUserPost);
+  app.post(
+    '/api/disconnect/:userid',
+    requireAuth,
+    profileController.disconnectUserPost
+  );
 
   // Profiles routes
   app.get('/api/profiles', requireAuth, profilesController.getProfilesGet);
@@ -72,7 +78,6 @@ module.exports = app => {
     requireAuth,
     profilesController.blockedProfilesGet
   );
-  app.post('/api/block/:userid', requireAuth, profilesController.blockUserPost);
   app.get(
     '/api/profiles/search',
     requireAuth,
@@ -81,6 +86,6 @@ module.exports = app => {
 
   //History routes
   app.post('/api/history', requireAuth, historyController.saveToHistoryPost);
-  app.get('/api/visitors', requireAuth, historyController.visitorsGet);
-  app.get('/api/visited', requireAuth, historyController.visitedGet);
+  app.get('/api/visitors/:page', requireAuth, historyController.visitorsGet);
+  app.get('/api/visited/:page', requireAuth, historyController.visitedGet);
 };

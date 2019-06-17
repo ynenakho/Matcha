@@ -32,8 +32,12 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-mongoose.connect(keys.mongoURI, { useNewUrlParser: true }, () =>
-  console.log('MongoDB connected')
+mongoose.connect(
+  keys.mongoURI,
+  {
+    useNewUrlParser: true
+  },
+  () => console.log('MongoDB connected')
 );
 mongoose.set('useCreateIndex', true);
 

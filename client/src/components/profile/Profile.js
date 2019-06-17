@@ -16,6 +16,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
 import moment from 'moment';
+import _ from 'lodash';
 
 const styles = theme => ({
   root: {
@@ -49,11 +50,90 @@ class Profile extends Component {
     };
   }
 
-  _fetchData = () => {
+  _renderInfo = () => {
+    const {
+      profile: { profile },
+      classes
+    } = this.props;
+    if (profile.invisible) {
+      return (
+        <Typography variant="h4" component="h3" color="primary">
+          User Blocked You
+          <br />
+          Sorry...
+        </Typography>
+      );
+    }
+    return (
+      <React.Fragment>
+        <Button
+          onClick={this.handleOpenModal}
+          variant="contained"
+          className={classes.button}
+        >
+          Pictures
+        </Button>
+        {this.renderListItem(
+          'First Name:',
+          profile.connected
+            ? `${profile.firstName} (connected)`
+            : profile.blocked
+            ? `${profile.firstName} (blocked)`
+            : profile.firstName
+        )}
+        <Divider />
+        {this.renderListItem('Last Name:', profile.lastName)}
+        <Divider />
+        {this.renderListItem(
+          'Age:',
+          profile.birthDate
+            ? moment().diff(moment(new Date(profile.birthDate)), 'years')
+            : ''
+        )}
+        <Divider />
+        {this.renderListItem('Gender:', profile.gender)}
+        <Divider />
+        {this.renderListItem('Sex Preferences:', profile.sexPref)}
+        <Divider />
+        {this.renderListItem('Bio:', profile.bio)}
+        <Divider />
+        {this.renderListItem(
+          'Interests',
+          profile.interests ? profile.interests.join(', ') : ''
+        )}
+        <Divider />
+        {this.renderListItem('Rating:', profile.rating)}
+        {this._renderButtons()}
+      </React.Fragment>
+    );
+  };
+
+  _fetchData = async () => {
     const { id } = this.props.match.params;
-    this.props.getProfile(id);
+    const profile = await this.props.getProfile(id);
     this.props.getPicture(id);
     this.props.getAllPictures(id);
+    if (_.isEmpty(profile)) {
+      this.props.history.push({
+        pathname: '/create-profile',
+        state: {
+          componentName: 'Create'
+        }
+      });
+    }
+  };
+
+  _blockUser = () => {
+    console.log('Blocked!');
+    const { blockUser, match } = this.props;
+    blockUser(match.params.id);
+  };
+
+  _disconnectUser = () => {
+    console.log('Disconnect!');
+    // DISCONNECT ACTION!!!!!
+    const { disconnectUser, match } = this.props;
+    disconnectUser(match.params.id);
   };
 
   componentDidMount() {
@@ -88,8 +168,8 @@ class Profile extends Component {
   };
 
   _renderButtons = () => {
-    const { classes, match, auth } = this.props;
-    if (match.params.id === auth.user.id) {
+    const { classes, match, auth, profile } = this.props;
+    if (auth.user && match.params.id === auth.user.id) {
       return (
         <React.Fragment>
           <Button
@@ -130,7 +210,29 @@ class Profile extends Component {
         </React.Fragment>
       );
     }
-    return null;
+    return (
+      <React.Fragment>
+        <Button
+          variant="outlined"
+          size="medium"
+          color="primary"
+          className={classes.button}
+          onClick={this._blockUser}
+        >
+          {profile.profile.blocked ? 'Unblock User' : 'Block User'}
+        </Button>
+        <Button
+          variant="outlined"
+          size="medium"
+          color="primary"
+          className={classes.button}
+          onClick={this._disconnectUser}
+          disabled={!profile.profile.connected || profile.profile.blocked}
+        >
+          Disconnect
+        </Button>
+      </React.Fragment>
+    );
   };
 
   render() {
@@ -142,8 +244,8 @@ class Profile extends Component {
     } else {
       return (
         <div className={classes.root}>
-          <Grid container spacing={24} justify="center" alignItems="center">
-            <Grid item xs={12} sm={10} md={6} lg={4}>
+          <Grid container spacing={10} justify="center" alignItems="center">
+            <Grid item xs={12} sm={10} md={8}>
               <Typography variant="h4" component="h3" color="primary">
                 Profile
               </Typography>
@@ -161,45 +263,15 @@ class Profile extends Component {
                   className={classes.bigAvatar}
                 />
               )}
-              <Button
-                onClick={this.handleOpenModal}
-                variant="contained"
-                className={classes.button}
-              >
-                Pictures
-              </Button>
-              {/* {this.renderListItem('User Name:', auth.user.username)}
-              <Divider /> */}
-              {this.renderListItem('First Name:', profile.firstName)}
-              <Divider />
-              {this.renderListItem('Last Name:', profile.lastName)}
-              <Divider />
-              {this.renderListItem(
-                'Age:',
-                profile.birthDate
-                  ? moment().diff(moment(new Date(profile.birthDate)), 'years')
-                  : ''
-              )}
-              <Divider />
-              {this.renderListItem('Gender:', profile.gender)}
-              <Divider />
-              {this.renderListItem('Sex Preferences:', profile.sexPref)}
-              <Divider />
-              {this.renderListItem('Bio:', profile.bio)}
-              <Divider />
-              {this.renderListItem(
-                'Interests',
-                profile.interests ? profile.interests.join(', ') : ''
-              )}
-              <Divider />
-              {this.renderListItem('Rating:', profile.rating)}
-              {this._renderButtons()}
+
+              {this._renderInfo()}
             </Grid>
           </Grid>
           <ManagePictures
             handleCloseModal={this.handleCloseModal}
             open={this.state.open}
             userId={match.params.id}
+            blocked={profile.profile.blocked}
             // classes={classes}
           />
         </div>
@@ -210,7 +282,7 @@ class Profile extends Component {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  profile: state.profile.profile,
+  profile: state.profile,
   picture: state.profile.picture
 });
 

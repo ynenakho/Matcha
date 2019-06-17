@@ -75,18 +75,128 @@ exports.currentProfileGet = async (req, res) => {
       return res.json({ profile: {} });
     }
     if (req.user.id !== req.params.userid) {
-      const blocked = await Block.findOne({
+      const blockedByYou = await Block.findOne({
         blockedBy: req.user.id,
         _userId: req.params.userid
       });
-      profile.blocked = blocked ? true : false;
+      profile.blocked = blockedByYou ? true : false;
       const connected = await Connection.findOne({
         _userId: req.user.id,
         connectedTo: req.params.userid
       });
       profile.connected = connected ? true : false;
+      const blockedYou = await Block.findOne({
+        blockedBy: req.params.userid,
+        _userId: req.user.id
+      });
+      profile.invisible = blockedYou ? true : false;
     }
     return res.json({ profile });
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
+};
+
+exports.blockUserPost = async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      _userId: req.params.userid
+    });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile Not Found' });
+    }
+    const block = await Block.findOne({
+      _userId: profile._userId,
+      blockedBy: req.user.id
+    });
+    let likes = [];
+    if (block) {
+      block.remove();
+    } else {
+      // Delete or add connection depends on likes
+      likes = await Like.find({
+        _userId: req.params.userid,
+        likedBy: req.user.id
+      });
+      if (likes.length) {
+        for (let i = 0; i < likes.length; i++) {
+          likes[i].remove();
+          profile.rating -= 1;
+        }
+      }
+      await profile.save(err => {
+        if (err) res.status(500).send({ error: err });
+      });
+      const connection = await Connection.findOne({
+        _userId: req.user.id,
+        connectedTo: req.params.userid
+      });
+      if (connection) {
+        connection.remove();
+      }
+      const connectionBack = await Connection.findOne({
+        _userId: req.params.userid,
+        connectedTo: req.user.id
+      });
+      if (connectionBack) {
+        connectionBack.remove();
+      }
+      newBlock = new Block({
+        _userId: profile._userId,
+        blockedBy: req.user.id
+      });
+      newBlock.save(err => {
+        if (err) res.status(500).send({ error: err });
+      });
+    }
+    const profileReturn = profile.toJSON();
+    profileReturn.blocked = block ? false : true;
+    profileReturn.connected = false;
+    return res.json({ profile: profileReturn, likes });
+  } catch (err) {
+    return res.status(500).send({ error: err });
+  }
+};
+
+exports.disconnectUserPost = async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      _userId: req.params.userid
+    });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile Not Found' });
+    }
+    // MAKE DISCONNECTION!!!!!!!
+    const connection = await Connection.findOne({
+      _userId: req.user.id,
+      connectedTo: req.params.userid
+    });
+    let likes = [];
+    if (connection) {
+      likes = await Like.find({
+        _userId: req.params.userid,
+        likedBy: req.user.id
+      });
+      if (likes.length) {
+        for (let i = 0; i < likes.length; i++) {
+          likes[i].remove();
+          profile.rating -= 1;
+        }
+      }
+      await profile.save();
+      connection.remove();
+      const connectionBack = await Connection.findOne({
+        _userId: req.params.userid,
+        connectedTo: req.user.id
+      });
+      if (connectionBack) {
+        connectionBack.remove();
+      }
+    }
+    const profileReturn = profile.toJSON();
+    profileReturn.blocked = false;
+    profileReturn.connected = false;
+    return res.json({ profile: profileReturn, likes });
   } catch (err) {
     return res.status(500).send({ error: err });
   }

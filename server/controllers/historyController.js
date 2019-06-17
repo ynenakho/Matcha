@@ -23,10 +23,15 @@ exports.saveToHistoryPost = async (req, res) => {
 
 exports.visitedGet = async (req, res) => {
   try {
+    const { page } = req.params;
+    // GET BY 5 USERS
     const arrProfiles = [];
-    const history = await History.find({ visitedBy: req.user.id }).sort({
-      createdAt: -1
-    });
+    const history = await History.find({ visitedBy: req.user.id })
+      .limit(5)
+      .skip(5 * page)
+      .sort({
+        createdAt: -1
+      });
 
     for (let i = 0; i < history.length; i++) {
       const profile = await Profile.findOne({
@@ -49,10 +54,15 @@ exports.visitedGet = async (req, res) => {
 
 exports.visitorsGet = async (req, res) => {
   try {
+    const { page } = req.params;
+    // GET BY 5 USERS
     const arrProfiles = [];
-    const history = await History.find({ _userId: req.user.id }).sort({
-      createdAt: -1
-    });
+    const history = await History.find({ _userId: req.user.id })
+      .limit(5)
+      .skip(5 * page)
+      .sort({
+        createdAt: -1
+      });
     for (let i = 0; i < history.length; i++) {
       const profile = await Profile.findOne({
         _userId: history[i].visitedBy

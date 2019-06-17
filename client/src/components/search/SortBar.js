@@ -1,24 +1,23 @@
-import React, { Component } from 'react';
-import {
-  FormControlLabel,
-  Checkbox,
-  Button,
-  Radio,
-  RadioGroup
-} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import React from 'react';
+import { FormControlLabel, Button, Radio, RadioGroup } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   root: {
+    marginTop: '20px',
     display: 'flex',
-    justifyContent: 'middle'
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  button: {
+    height: '36px',
+    width: '90px'
   }
 });
 
 export default function SortBar(props) {
   const classes = useStyles();
-  const [selectedValue, setSelectedValue] = React.useState();
+  const [selectedValue, setSelectedValue] = React.useState('');
 
   const _handleChange = e => {
     setSelectedValue(e.target.value);
@@ -31,46 +30,33 @@ export default function SortBar(props) {
 
   return (
     <div className={classes.root}>
-      <h1>SortBar</h1>
       <RadioGroup
         aria-label="Gender"
         name="gender1"
-        // className={classes.group}
         value={selectedValue}
         onChange={_handleChange}
         row
       >
-        <FormControlLabel
-          control={<Radio />}
-          label="Age"
-          value="age"
-          // labelPlacement="top"
-        />
+        <FormControlLabel control={<Radio />} label="Age" value="age" />
         <FormControlLabel
           control={<Radio />}
           label="Location"
           value="location"
-          // labelPlacement="top"
         />
-        <FormControlLabel
-          control={<Radio />}
-          label="Rating"
-          value="rating"
-          // labelPlacement="top"
-        />
+        <FormControlLabel control={<Radio />} label="Rating" value="rating" />
         <FormControlLabel
           control={<Radio />}
           label="Common Tags"
           value="tags"
-          // labelPlacement="top"
         />
       </RadioGroup>
       <Button
         variant="outlined"
         size="medium"
         color="primary"
-        // className={classes.button}
+        className={classes.button}
         onClick={_submitSortValues}
+        disabled={selectedValue === ''}
       >
         Sort
       </Button>

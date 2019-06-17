@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 
 export const saveToHistory = userId => dispatch => {
-  dispatch({ type: LOADING_HISTORY });
+  // dispatch({ type: LOADING_HISTORY });
   axios
     .post(`/api/history`, { userId })
     .then(response => {
@@ -25,10 +25,10 @@ export const saveToHistory = userId => dispatch => {
     });
 };
 
-export const getVisitors = () => dispatch => {
-  dispatch({ type: LOADING_HISTORY });
-  axios
-    .get(`/api/visitors`)
+export const getVisitors = page => dispatch => {
+  // dispatch({ type: LOADING_HISTORY });
+  return axios
+    .get(`/api/visitors/${page}`)
     .then(response => {
       dispatch({
         type: SET_VISITORS_HISTORY,
@@ -43,10 +43,10 @@ export const getVisitors = () => dispatch => {
     });
 };
 
-export const getVisited = () => dispatch => {
-  dispatch({ type: LOADING_HISTORY });
-  axios
-    .get(`/api/visited`)
+export const getVisited = page => dispatch => {
+  // dispatch({ type: LOADING_HISTORY });
+  return axios
+    .get(`/api/visited/${page}`)
     .then(response => {
       dispatch({
         type: SET_VISITED_HISTORY,

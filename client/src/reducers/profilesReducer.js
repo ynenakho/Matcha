@@ -1,12 +1,13 @@
 import {
-  GET_ALL_PROFILES,
-  LOADING_PROFILES,
-  SEARCH_PROFILES
+  SET_PROFILES,
+  LOADING_PROFILES
+  // SEARCH_PROFILES,
+  // SORT_PROFILES
 } from '../actions/types';
 
 const INITIAL_STATE = {
   profiles: [],
-  loading: false
+  loading: true
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -16,18 +17,24 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         loading: true
       };
-    case GET_ALL_PROFILES:
+    case SET_PROFILES:
       return {
         ...state,
         profiles: action.payload,
         loading: false
       };
-    case SEARCH_PROFILES:
-      return {
-        ...state,
-        profiles: action.payload,
-        loading: false
-      };
+    // case SORT_PROFILES:
+    //   return {
+    //     ...state,
+    //     profiles: action.payload,
+    //     loading: false
+    //   };
+    // case SEARCH_PROFILES:
+    //   return {
+    //     ...state,
+    //     profiles: action.payload,
+    //     loading: false
+    //   };
     default:
       return state;
   }

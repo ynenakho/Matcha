@@ -19,22 +19,28 @@ class PictureDiv extends Component {
     likePicture,
     deletePicture,
     auth,
-    makeAvatarPicture
+    makeAvatarPicture,
+    blocked
   ) => {
     if (auth.user.id === picture._userId) {
       return (
         <div>
           <LikeButton likePicture={likePicture} picture={picture} auth={auth} />
-          <DeleteButton deletePicture={deletePicture} pictureId={picture._id} />
           <Button onClick={() => makeAvatarPicture(picture._id)}>
             Make Avatar
           </Button>
+          <DeleteButton deletePicture={deletePicture} pictureId={picture._id} />
         </div>
       );
     }
     return (
       <div>
-        <LikeButton likePicture={likePicture} picture={picture} auth={auth} />
+        <LikeButton
+          likePicture={likePicture}
+          picture={picture}
+          auth={auth}
+          blocked={blocked}
+        />
       </div>
     );
   };
@@ -45,7 +51,8 @@ class PictureDiv extends Component {
       likePicture,
       deletePicture,
       auth,
-      makeAvatarPicture
+      makeAvatarPicture,
+      blocked
     } = this.props;
     return (
       <div>
@@ -55,7 +62,8 @@ class PictureDiv extends Component {
           likePicture,
           deletePicture,
           auth,
-          makeAvatarPicture
+          makeAvatarPicture,
+          blocked
         )}
       </div>
     );

@@ -8,7 +8,7 @@ import {
 const INITIAL_STATE = {
   visitors: [],
   visited: [],
-  loading: false
+  loading: true
 };
 
 export default (state = INITIAL_STATE, action) => {

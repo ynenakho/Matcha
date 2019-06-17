@@ -1,5 +1,8 @@
-1. when uploading a picture check for type
-2. when deleting a picture -> delete it from folder also
-3. add age to profile model +
-4. figure out how to get the location without permition + / -
-5. visualize 2 lists in histories +
+- when uploading a picture check for type
++ when deleting a picture -> delete it from folder also
++ add age to profile model 
++/- figure out how to get the location without permition 
++ visualize 2 lists in histories 
++ on block delete all likes and connections 
++ return deleted likes after block/disconnect to change redux state
++ on delete picture delete connection if necesary

@@ -67,7 +67,7 @@ export class SignUp extends Component {
     const { handleSubmit, pristine, submitting, classes } = this.props;
     return (
       <div className={classes.root}>
-        <Grid container spacing={24} justify="center" alignItems="center">
+        <Grid container spacing={10} justify="center" alignItems="center">
           <Grid item xs={12} sm={8} md={5} lg={4}>
             <Paper className={classes.paper} elevation={2}>
               <Typography variant="h4" component="h3" color="primary">

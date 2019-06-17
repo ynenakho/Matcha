@@ -32,9 +32,12 @@ const findUserLike = (user, likes) => {
     : false;
 };
 
-const LikeButton = ({ likePicture, auth, picture, classes }) => {
+const LikeButton = ({ likePicture, auth, picture, classes, blocked }) => {
   return (
-    <IconButton onClick={() => likePicture(picture._id, picture._userId)}>
+    <IconButton
+      onClick={() => likePicture(picture._id, picture._userId)}
+      disabled={blocked}
+    >
       <LikeIcon
         className={classnames({
           [`${classes.button}`]: findUserLike(auth.user, picture.likes)

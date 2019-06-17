@@ -111,8 +111,8 @@ class EditUser extends Component {
     }
     return (
       <div className={classes.root}>
-        <Grid container spacing={24} justify="center" alignItems="center">
-          <Grid item xs={12} sm={10} md={6} lg={4}>
+        <Grid container spacing={10} justify="center" alignItems="center">
+          <Grid item xs={12} sm={10} md={8}>
             <Typography variant="h4" component="h3" color="primary">
               Edit User
             </Typography>

@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Connection = require('../models/connectionModel');
 const Profile = require('../models/profileModel');
 const Picture = require('../models/pictureModel');
 const Like = require('../models/likeModel');
@@ -44,17 +45,31 @@ exports.getProfilesGet = async (req, res) => {
   let profiles;
   try {
     if (sexPref === 'bisexual') {
-      profiles = await Profile.find({}).lean();
+      profiles = await Profile.find({})
+        .sort({ rating: -1 })
+        .lean();
     } else {
-      profiles = await Profile.find({ gender: sexPref }).lean();
+      profiles = await Profile.find({ gender: sexPref })
+        .sort({ rating: -1 })
+        .lean();
     }
     if (!profiles) {
       return res.json({ profiles: [] });
     } else {
-      const blocks = await Block.find({ blockedBy: req.user.id });
+      const blockedByYou = await Block.find({ blockedBy: req.user.id });
+      const blockedYou = await Block.find({ _userId: req.user.id });
       const returnArray = profiles.filter(profile => {
-        for (let i = 0; i < blocks.length; i++) {
-          if (blocks[i]._userId.toString() === profile._userId.toString()) {
+        for (let i = 0; i < blockedByYou.length; i++) {
+          if (
+            blockedByYou[i]._userId.toString() === profile._userId.toString()
+          ) {
+            return false;
+          }
+        }
+        for (let i = 0; i < blockedYou.length; i++) {
+          if (
+            blockedYou[i].blockedBy.toString() === profile._userId.toString()
+          ) {
             return false;
           }
         }
@@ -123,39 +138,5 @@ exports.searchProfilesGet = async (req, res) => {
     }
   } catch (err) {
     res.status(500).send({ error: err });
-  }
-};
-
-exports.blockUserPost = async (req, res) => {
-  try {
-    const profile = await Profile.findOne({
-      _userId: req.params.userid
-    }).lean();
-    if (!profile) {
-      return res.status(404).json({ error: 'Profile Not Found' });
-    }
-    const block = await Block.findOne({
-      _userId: profile._userId,
-      blockedBy: req.user.id
-    });
-    // Delete or add connection depends on likes
-
-    if (block) {
-      block.remove();
-      profile.blocked = false;
-      return res.json({ profile });
-    } else {
-      newBlock = new Block({
-        _userId: profile._userId,
-        blockedBy: req.user.id
-      });
-      newBlock.save(err => {
-        if (err) res.status(500).send({ error: err });
-        profile.blocked = true;
-        return res.json({ profile });
-      });
-    }
-  } catch (err) {
-    return res.status(500).send({ error: err });
   }
 };

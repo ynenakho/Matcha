@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { Grid, Typography, List } from '@material-ui/core';
+import { Grid, Typography, List, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import * as historyActions from '../../actions/historyActions';
 import ProfileItem from '../common/ProfileItem';
@@ -16,15 +16,93 @@ const styles = theme => ({
     width: '100%',
     // maxWidth: 360,
     backgroundColor: theme.palette.background.paper
+  },
+  arrows: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: '20px'
+  },
+  pageNumber: {
+    // margin: '0px 20px 0px 20px'
+  },
+  header: {
+    textAlign: 'center'
   }
 });
 
 class History extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visitorsPage: 0,
+      visitedPage: 0
+    };
+  }
+
   componentDidMount() {
     const { getVisitors, getVisited } = this.props;
-    getVisitors();
-    getVisited();
+    const { visitorsPage, visitedPage } = this.state;
+    getVisitors(visitorsPage);
+    getVisited(visitedPage);
   }
+
+  _prevPage = (get, page) => {
+    if (this.state[page] === 0) return;
+    get(this.state[page] - 1);
+    this.setState({
+      [page]: this.state[page] - 1
+    });
+  };
+
+  _nextPage = (get, page) => {
+    const { visitors, visited } = this.props.visitorsHistory;
+    const profiles = page === 'visitorsPage' ? visitors : visited;
+    if (profiles.length < 5) return;
+    get(this.state[page] + 1);
+    this.setState({
+      [page]: this.state[page] + 1
+    });
+  };
+
+  _renderArrows = page => {
+    const { visitors, visited } = this.props.visitorsHistory;
+    const { getVisitors, getVisited, classes } = this.props;
+    const profiles = page === 'visitorsPage' ? visitors : visited;
+    return (
+      <div className={classes.arrows}>
+        <Button
+          disabled={!this.state[page]}
+          variant="outlined"
+          size="small"
+          color="primary"
+          onClick={() =>
+            this._prevPage(
+              page === 'visitorsPage' ? getVisitors : getVisited,
+              page
+            )
+          }
+        >
+          Prev
+        </Button>
+        <span className={classes.pageNumber}>{this.state[page] + 1}</span>
+        <Button
+          disabled={profiles.length < 5}
+          variant="outlined"
+          size="small"
+          color="primary"
+          onClick={() =>
+            this._nextPage(
+              page === 'visitorsPage' ? getVisitors : getVisited,
+              page
+            )
+          }
+        >
+          Next
+        </Button>
+      </div>
+    );
+  };
 
   _renderList = profiles => {
     return profiles.map(profile => (
@@ -46,18 +124,30 @@ class History extends Component {
     }
     return (
       <div>
-        <Grid container spacing={24} justify="center">
+        <Grid container spacing={10} justify="center">
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" component="h3" color="primary">
+            <Typography
+              variant="h4"
+              component="h3"
+              color="primary"
+              className={classes.header}
+            >
               You visited:
             </Typography>
             <List className={classes.list}>{this._renderList(visited)}</List>
+            {this._renderArrows('visitedPage')}
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" component="h3" color="primary">
+            <Typography
+              variant="h4"
+              component="h3"
+              color="primary"
+              className={classes.header}
+            >
               Your visitors:
             </Typography>
             <List className={classes.list}>{this._renderList(visitors)}</List>
+            {this._renderArrows('visitorsPage')}
           </Grid>
         </Grid>
       </div>

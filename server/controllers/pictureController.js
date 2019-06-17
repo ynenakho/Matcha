@@ -10,26 +10,65 @@ exports.deletePicturePost = async (req, res) => {
   try {
     const pictureToDelete = await Picture.findById(req.params.pictureid);
     fs.unlink('.' + pictureToDelete.path, err => {
-      if (err) res.status(500).json({ error: err });
+      if (err)
+        res.status(500).json({ error: 'Couldnt delete picture from storage' });
     });
     const deletedPicture = await pictureToDelete.remove();
     const likes = await Like.find({ _pictureId: req.params.pictureid });
     const profile = await Profile.findOne({ _userId: req.user.id });
     profile.numOfPictures -= 1;
-    profile.rating -= 1;
     if (profile._profilePictureId.toString() === req.params.pictureid) {
       profile._profilePictureId = await Picture.findOne({
         _userId: req.user.id
       });
     }
-    await profile.save();
-    if (likes.length) {
-      for (let i = 0; i < likes.length; i++) {
-        const deletedLike = await likes[i].remove();
-        // CHECK FOR CONNECTIONS AND DELETE THEM BEFORE RETURNING VALUE
-      }
+
+    for (let i = 0; i < likes.length; i++) {
+      await likes[i].remove();
+      profile.rating -= 1;
     }
-    return res.json({ picture: deletedPicture });
+    await profile.save();
+    // WAS DELETING THE CONNECTION IF THERE ARE NO MORE LIKES FROM OTHER USER
+    // DONT THINK ITS NECESARY
+    // for (let i = 0; i < likes.length; i++) {
+    //   if (likes[i].likedBy !== req.user.id) {
+    //     const restOfLikes = await Like.find({
+    //       _userId: req.user.id,
+    //       likedBy: likes[i].likedBy
+    //     });
+    //     if (!restOfLikes.length) {
+    //       // Make disconnection
+    //       const connection = await Connection.findOne({
+    //         _userId: req.user.id,
+    //         connectedTo: likes[i].likedBy
+    //       });
+    //       if (connection) {
+    //         connection.remove(err => {
+    //           if (err) {
+    //             return res
+    //               .status(500)
+    //               .json({ error: "Couldn't find connection" });
+    //           }
+    //         });
+    //       }
+    //       const connectionBack = await Connection.findOne({
+    //         _userId: likes[i].likedBy,
+    //         connectedTo: req.user.id
+    //       });
+    //       if (connectionBack) {
+    //         connectionBack.remove(err => {
+    //           if (err) {
+    //             return res
+    //               .status(500)
+    //               .json({ error: "Couldn't find connection back" });
+    //           }
+    //         });
+    //       }
+    //     }
+    //   }
+    // }
+
+    return res.json({ picture: deletedPicture, rating: profile.rating });
   } catch (err) {
     res.status(500).send({ error: err });
   }
@@ -86,7 +125,13 @@ exports.likePicturePost = async (req, res) => {
           });
         }
       }
-      return res.json({ like: savedLike, connected: true });
+      return res.json({
+        like: savedLike,
+        connected:
+          req.params.userid !== req.user.id && allLikes.length >= 1
+            ? true
+            : false
+      });
     } else {
       const deletedLike = await existingLike.remove();
       allLikes = await Like.find({

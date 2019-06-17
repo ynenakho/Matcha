@@ -74,7 +74,17 @@ class ProfileItem extends Component {
                         'years'
                       )
                     : 'unknown'
-                }`}
+                } `}
+                <br />
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className={classes.inline}
+                  color="textPrimary"
+                >
+                  Rating:
+                </Typography>
+                {` ${profile.rating}`}
                 <br />
                 <Typography
                   component="span"
