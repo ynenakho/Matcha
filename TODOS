@@ -7,3 +7,4 @@
 + return deleted likes after block/disconnect to change redux state
 + on delete picture delete connection if necesary
 - messaging (socket.io)
+- ui for messaging

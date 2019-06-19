@@ -1,10 +1,10 @@
 import {
-  SET_CURRENT_PROFILE,
+  SET_PROFILE,
   PROFILE_LOADING,
   PROFILE_ERROR,
   CREATE_PROFILE,
   UPLOAD_PICTURE,
-  SET_CURRENT_PICTURE,
+  SET_PICTURE,
   GET_ALL_PICTURES,
   LIKE_PICTURE,
   DELETE_PICTURE,
@@ -19,7 +19,7 @@ export const disconnectUser = userId => dispatch => {
     .post(`/api/disconnect/${userId}`)
     .then(response => {
       dispatch({
-        type: SET_CURRENT_PROFILE,
+        type: SET_PROFILE,
         payload: response.data.profile
       });
       dispatch({
@@ -40,7 +40,7 @@ export const blockUser = userId => dispatch => {
     .post(`/api/block/${userId}`)
     .then(response => {
       dispatch({
-        type: SET_CURRENT_PROFILE,
+        type: SET_PROFILE,
         payload: response.data.profile
       });
       dispatch({
@@ -125,7 +125,7 @@ export const getProfile = id => dispatch => {
     .get(`/api/profile/${id}`)
     .then(response => {
       dispatch({
-        type: SET_CURRENT_PROFILE,
+        type: SET_PROFILE,
         payload: response.data.profile
       });
       return response.data.profile;
@@ -144,7 +144,7 @@ export const getPicture = id => dispatch => {
     .get(`/api/picture/${id}`)
     .then(response => {
       dispatch({
-        type: SET_CURRENT_PICTURE,
+        type: SET_PICTURE,
         payload: response.data.picture
       });
     })
@@ -162,7 +162,7 @@ export const makeAvatarPicture = pictureId => dispatch => {
     .post(`/api/picture/${pictureId}`)
     .then(response => {
       dispatch({
-        type: SET_CURRENT_PICTURE,
+        type: SET_PICTURE,
         payload: response.data.picture
       });
     })

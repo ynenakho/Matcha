@@ -5,6 +5,7 @@ import profileReducer from './profileReducer';
 import profilesReducer from './profilesReducer';
 import historyReducer from './historyReducer';
 import errorReducer from './errorReducer';
+import chatReducer from './chatReducer';
 
 export default combineReducers({
   form: formReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   profiles: profilesReducer,
   history: historyReducer,
   auth: authReducer,
-  error: errorReducer
+  error: errorReducer,
+  chat: chatReducer
 });

@@ -3,15 +3,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
-import jwt_decode from 'jwt-decode';
-import { SnackbarProvider } from 'notistack';
 
+import { SnackbarProvider } from 'notistack';
 import * as serviceWorker from './serviceWorker';
 import AppRouter from './AppRouter';
-
-import setAuthToken from './components/common/setAuthToken';
-import { setCurrentUser, logout } from './actions/authActions';
-// import { changeOnlineStatus } from './actions/authActions';
 import reducers from './reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -21,22 +16,6 @@ const store = createStore(
   { auth: { authenticated: localStorage.jwtToken } },
   composeEnhancers(applyMiddleware(reduxThunk))
 );
-
-if (localStorage.jwtToken) {
-  const decoded = jwt_decode(localStorage.jwtToken);
-  const currentTime = Date.now();
-  const two_hours = 2 * 3600 * 1000;
-  // Check for expiration of token (2 hours)
-  if (decoded.iat + two_hours < currentTime) {
-    store.dispatch(logout());
-    window.location.href = '/login';
-  } else {
-    // Set auth token header auth
-    setAuthToken(localStorage.jwtToken);
-    store.dispatch(setCurrentUser(localStorage.jwtToken, () => {}));
-    // static.dispatch(changeOnlineStatus('online'));
-  }
-}
 
 ReactDOM.render(
   <Provider store={store}>

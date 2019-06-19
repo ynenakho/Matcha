@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import {
-  SET_CURRENT_PROFILE,
+  SET_PROFILE,
   PROFILE_LOADING,
   CREATE_PROFILE,
   UPLOAD_PICTURE,
-  SET_CURRENT_PICTURE,
+  SET_PICTURE,
   GET_ALL_PICTURES,
   LIKE_PICTURE,
   DELETE_PICTURE,
@@ -107,13 +107,13 @@ export default (state = INITIAL_STATE, action) => {
             : {},
         loading: false
       };
-    case SET_CURRENT_PICTURE:
+    case SET_PICTURE:
       return {
         ...state,
         picture: action.payload,
         loading: false
       };
-    case SET_CURRENT_PROFILE:
+    case SET_PROFILE:
       return {
         ...state,
         profile: action.payload,

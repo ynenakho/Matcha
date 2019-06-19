@@ -56,58 +56,61 @@ class Search extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { getProfile, auth, profile, profiles } = this.props;
-    if (auth.user) {
-      const currentProfile = await getProfile(auth.user.id);
-      if (_.isEmpty(currentProfile)) {
-        this.props.history.push({
-          pathname: '/create-profile',
-          state: {
-            componentName: 'Create'
-          }
-        });
-      }
+    // if (auth.user) {
+    //   const currentProfile = await getProfile(auth.user.id);
+    // if (_.isEmpty(currentProfile)) {
+    if (_.isEmpty(auth.profile)) {
+      this.props.history.push({
+        pathname: '/create-profile',
+        state: {
+          componentName: 'Create'
+        }
+      });
     }
     if (
-      _.isEmpty(profiles.profiles) &&
-      profile._userId &&
-      profile._userId === auth.user.id
+      _.isEmpty(profiles.profiles)
+      // profile._userId &&
+      // profile._userId === auth.user.id
     ) {
       console.log('In did mount');
       this._getProfiles();
     }
   }
 
-  async componentDidUpdate(prevProps) {
-    const { getProfile, auth, profile, profiles } = this.props;
-    if (prevProps.auth.user !== auth.user) {
-      const currentProfile = await getProfile(auth.user.id);
-      if (_.isEmpty(currentProfile)) {
-        this.props.history.push({
-          pathname: '/create-profile',
-          state: {
-            componentName: 'Create'
-          }
-        });
-      }
-    }
-    if (
-      _.isEmpty(profiles.profiles) &&
-      prevProps.profile !== profile &&
-      profile._userId === auth.user.id
-    ) {
-      console.log('In did update');
-      this._getProfiles();
-    }
-  }
+  // async componentDidUpdate(prevProps) {
+  //   const { getProfile, auth, profile, profiles } = this.props;
+  //   if (prevProps.auth.user !== auth.user) {
+  //     const currentProfile = await getProfile(auth.user.id);
+  //     if (_.isEmpty(currentProfile)) {
+  //       this.props.history.push({
+  //         pathname: '/create-profile',
+  //         state: {
+  //           componentName: 'Create'
+  //         }
+  //       });
+  //     }
+  //   }
+  //   if (
+  //     _.isEmpty(profiles.profiles) &&
+  //     prevProps.profile !== profile &&
+  //     profile._userId === auth.user.id
+  //   ) {
+  //     console.log('In did update');
+  //     this._getProfiles();
+  //   }
+  // }
 
   _getProfiles = () => {
-    const { getProfiles, profile } = this.props;
-    if (!profile.sexPref) {
+    const { getProfiles, auth } = this.props;
+    if (!auth.profile.sexPref) {
+      console.log(auth.profile.sexPref);
+
       getProfiles('bisexual');
     } else {
-      getProfiles(profile.sexPref);
+      console.log('2', auth.profile.sexPref);
+      getProfiles(auth.profile.sexPref);
     }
   };
 

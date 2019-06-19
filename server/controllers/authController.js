@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const Profile = require('../models/profileModel');
+const Picture = require('../models/pictureModel');
 const VerificationToken = require('../models/veificationTokenModel');
 const keys = require('../config/keys');
 const sgMail = require('@sendgrid/mail');
@@ -13,12 +14,30 @@ const tokenForUser = user => {
   return jwt.encode({ sub: user.id, iat: timestamp }, keys.jwtTokenSecret);
 };
 
-exports.currentUserGet = (req, res) => {
-  res.json({
-    id: req.user.id,
-    username: req.user.username,
-    email: req.user.email
-  });
+exports.currentUserGet = async (req, res) => {
+  try {
+    let picture = {};
+    let pictures = [];
+    let profile = await Profile.findOne({ _userId: req.user.id });
+    if (profile) {
+      picture = await Picture.findById(profile._profilePictureId);
+      pictures = await Picture.find({ _userId: req.user.id });
+    } else {
+      profile = {};
+    }
+    res.json({
+      picture,
+      pictures,
+      profile,
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email
+      }
+    });
+  } catch (err) {
+    res.status(500).send({ error: err });
+  }
 };
 
 exports.changeOnlineStatusPatch = async (req, res) => {
@@ -26,12 +45,12 @@ exports.changeOnlineStatusPatch = async (req, res) => {
   try {
     const profile = await Profile.findOne({ _userId: req.user._id });
     if (!profile) {
-      return res.status(400).json({ error: 'Profile not created yet' });
+      // return res.status(400).json({ error: 'Profile not created yet' });
     } else {
       profile.lastVisit = status;
       profile.save();
-      return res.json({ status });
     }
+    return res.json({ status });
   } catch (e) {
     res.status(500).send({ error: e });
   }

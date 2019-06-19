@@ -108,18 +108,20 @@ class Profile extends Component {
     );
   };
 
-  _fetchData = async () => {
+  _fetchData = () => {
     const { id } = this.props.match.params;
-    const profile = await this.props.getProfile(id);
-    this.props.getPicture(id);
-    this.props.getAllPictures(id);
-    if (_.isEmpty(profile)) {
+    const { auth } = this.props;
+    if (_.isEmpty(auth.profile)) {
       this.props.history.push({
         pathname: '/create-profile',
         state: {
           componentName: 'Create'
         }
       });
+    } else {
+      this.props.getProfile(id);
+      this.props.getPicture(id);
+      this.props.getAllPictures(id);
     }
   };
 
@@ -137,12 +139,13 @@ class Profile extends Component {
   };
 
   componentDidMount() {
-    // NEED TO MAKE MAKE ONE CALL INSTEAD OF TWO TO FIX BUF WITH RENDERING NO PROFILE FOR A SECOND
     this._fetchData();
   }
 
   componentDidUpdate(prevProps) {
+    console.log();
     if (prevProps.match.params.id !== this.props.match.params.id) {
+      console.log('HERE');
       this._fetchData();
     }
   }
@@ -230,6 +233,18 @@ class Profile extends Component {
           disabled={!profile.profile.connected || profile.profile.blocked}
         >
           Disconnect
+        </Button>
+        <Button
+          variant="outlined"
+          size="medium"
+          color="primary"
+          className={classes.button}
+          component={Link}
+          to={`/chat/${match.params.id}`}
+          // onClick={this._disconnectUser}
+          disabled={!profile.profile.connected || profile.profile.blocked}
+        >
+          Message
         </Button>
       </React.Fragment>
     );

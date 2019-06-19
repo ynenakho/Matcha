@@ -1,8 +1,12 @@
 import {
-  // AUTH_LOADING,
+  AUTH_LOADING,
   AUTH_USER,
   AUTH_ERROR,
-  SET_CURRENT_USER
+  SET_CURRENT_USER,
+  SET_CURRENT_PROFILE,
+  SET_CURRENT_PICTURE,
+  SET_CURRENT_PICTURES,
+  CHANGE_STATUS
   // EDIT_USER
 } from './types';
 import setAuthToken from '../components/common/setAuthToken';
@@ -12,7 +16,12 @@ import moment from 'moment';
 export const changeOnlineStatus = status => dispatch => {
   axios
     .patch('/api/changeonlinestatus', { status })
-    .then()
+    .then(response => {
+      dispatch({
+        type: CHANGE_STATUS,
+        payload: response.data.status
+      });
+    })
     .catch(e =>
       dispatch({
         type: AUTH_ERROR,
@@ -26,10 +35,10 @@ export const editUser = (formValues, success, fail) => dispatch => {
   axios
     .post('/api/user/edit', formValues)
     .then(response => {
-      dispatch({
-        type: AUTH_USER,
-        payload: response.data.token
-      });
+      // dispatch({
+      //   type: AUTH_USER,
+      //   payload: response.data.token
+      // });
       localStorage.setItem('jwtToken', response.data.token);
       setAuthToken(response.data.token);
       dispatch(setCurrentUser(response.data.token, () => {}));
@@ -44,21 +53,54 @@ export const editUser = (formValues, success, fail) => dispatch => {
     });
 };
 
+// export const getCurrentProfile = () => dispatch => {
+//   dispatch({ type: PROFILE_LOADING });
+
+//   return axios
+//     .get(`/api/profile`)
+//     .then(response => {
+//       dispatch({
+//         type: SET_CURRENT_PROFILE,
+//         payload: response.data.profile
+//       });
+//       return response.data.profile;
+//     })
+//     .catch(e => {
+//       dispatch({
+//         type: PROFILE_ERROR,
+//         payload: e.response.data.error
+//       });
+//     });
+// };
+
 export const setCurrentUser = (token, success) => dispatch => {
-  // dispatch({ type: AUTH_LOADING });
+  dispatch({ type: AUTH_LOADING });
   axios
     .get('/api/current')
     .then(response => {
       dispatch({
         type: SET_CURRENT_USER,
-        payload: response.data
+        payload: response.data.user
+      });
+      dispatch({
+        type: SET_CURRENT_PROFILE,
+        payload: response.data.profile
+      });
+
+      dispatch({
+        type: SET_CURRENT_PICTURE,
+        payload: response.data.picture
+      });
+      dispatch({
+        type: SET_CURRENT_PICTURES,
+        payload: response.data.pictures
       });
       dispatch({
         type: AUTH_USER,
         payload: token
       });
       dispatch(changeOnlineStatus('online'));
-      success(response.data.id);
+      success(response.data.user.id);
     })
     .catch(e =>
       dispatch({

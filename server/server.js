@@ -8,6 +8,8 @@ const cors = require('cors');
 const passport = require('passport');
 const multer = require('multer');
 const path = require('path');
+const SocketIo = require('socket.io');
+const SocketManager = require('./services/socketManager');
 
 const app = express();
 
@@ -32,12 +34,8 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-mongoose.connect(
-  keys.mongoURI,
-  {
-    useNewUrlParser: true
-  },
-  () => console.log('MongoDB connected')
+mongoose.connect(keys.mongoURI, { useNewUrlParser: true }, () =>
+  console.log('MongoDB connected')
 );
 mongoose.set('useCreateIndex', true);
 
@@ -54,4 +52,8 @@ routes(app);
 
 const port = process.env.PORT || 4000;
 const server = http.createServer(app);
+const io = (module.exports.io = SocketIo(server));
+
+io.on('connection', SocketManager);
+
 server.listen(port, () => console.log('Server listening on', port));

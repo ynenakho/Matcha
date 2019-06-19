@@ -2,14 +2,16 @@ import {
   AUTH_ERROR,
   PROFILE_ERROR,
   PROFILES_ERROR,
-  HISTORY_ERROR
+  HISTORY_ERROR,
+  CHAT_ERROR
 } from '../actions/types';
 
 const INITIAL_STATE = {
   auth: '',
   profile: '',
   profiles: '',
-  history: ''
+  history: '',
+  chat: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -18,6 +20,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         history: action.payload
+      };
+    case CHAT_ERROR:
+      return {
+        ...state,
+        chat: action.payload
       };
     case PROFILES_ERROR:
       return {

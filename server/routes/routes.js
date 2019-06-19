@@ -3,6 +3,7 @@ const profileController = require('../controllers/profileController');
 const profilesController = require('../controllers/profilesController');
 const historyController = require('../controllers/historyController');
 const pictureController = require('../controllers/pictureController');
+const chatController = require('../controllers/chatController');
 
 const passport = require('passport');
 require('../services/passport');
@@ -84,8 +85,11 @@ module.exports = app => {
     profilesController.searchProfilesGet
   );
 
-  //History routes
+  // History routes
   app.post('/api/history', requireAuth, historyController.saveToHistoryPost);
   app.get('/api/visitors/:page', requireAuth, historyController.visitorsGet);
   app.get('/api/visited/:page', requireAuth, historyController.visitedGet);
+
+  // Chat routes
+  app.post('/api/chat', requireAuth, chatController.createChatPost);
 };

@@ -16,6 +16,7 @@ import CreateProfile from './components/profile/CreateProfile';
 import EditUser from './components/profile/EditUser';
 import Search from './components/search/Search';
 import History from './components/history/History';
+import Chat from './components/messaging/Chat';
 
 export class AppRouter extends Component {
   render() {
@@ -30,6 +31,7 @@ export class AppRouter extends Component {
           <PrivateRoute path="/user/edit" exact component={EditUser} />
           <PrivateRoute path="/history" exact component={History} />
           <PrivateRoute path="/search" exact component={Search} />
+          <PrivateRoute path="/chat/:id" exact component={Chat} />
           <PrivateRoute
             path="/create-profile"
             exact
