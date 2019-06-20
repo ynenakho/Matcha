@@ -57,7 +57,7 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    const { getProfile, auth, profile, profiles } = this.props;
+    const { auth, profiles } = this.props;
     // if (auth.user) {
     //   const currentProfile = await getProfile(auth.user.id);
     // if (_.isEmpty(currentProfile)) {

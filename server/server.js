@@ -52,7 +52,7 @@ routes(app);
 
 const port = process.env.PORT || 4000;
 const server = http.createServer(app);
-const io = (module.exports.io = SocketIo(server));
+const io = SocketIo(server);
 
 io.on('connection', SocketManager);
 

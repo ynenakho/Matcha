@@ -92,4 +92,14 @@ module.exports = app => {
 
   // Chat routes
   app.post('/api/chat', requireAuth, chatController.createChatPost);
+  app.get(
+    '/api/chat/messages/:chatid',
+    requireAuth,
+    chatController.messagesGet
+  );
+  app.post(
+    '/api/chat/messages/:chatid',
+    requireAuth,
+    chatController.createMessagePost
+  );
 };

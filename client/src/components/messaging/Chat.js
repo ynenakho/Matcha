@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import openSocket from 'socket.io-client';
 import Messages from './Messages';
 import MessageInput from './MessageInput';
-import { MESSAGE_SENT, TYPING } from '../common/events';
+import { MESSAGE_SENT, MESSAGE_RECIEVED, TYPING } from '../common/events';
 import * as chatActions from '../../actions/chatActions';
 import * as profileActions from '../../actions/profileActions';
 import _ from 'lodash';
@@ -25,9 +25,12 @@ class Chat extends Component {
 
   initSocket = () => {
     // const socket = io(socketUrl);
-    const socket = openSocket('/');
+    const socket = openSocket('localhost:4000');
     socket.on('connect', () => {
       console.log('Connected');
+    });
+    socket.on(MESSAGE_RECIEVED, ({ message, chatId }) => {
+      console.log('mesage recieved', message, chatId);
     });
 
     this.setState({ socket });
@@ -47,6 +50,7 @@ class Chat extends Component {
 
   _sendMessage = (chatId, message) => {
     const { socket } = this.state;
+    console.log('In main chat sendMessage', chatId, message);
     socket.emit(MESSAGE_SENT, { chatId, message });
   };
 
@@ -72,10 +76,10 @@ class Chat extends Component {
         />
         <MessageInput
           sendMessage={message => {
-            this._sendMessage('chatId', 'some message');
+            this._sendMessage(chat.chat._id, message);
           }}
           sendTyping={isTyping => {
-            this._sendTyping('chatId', 'isTyping boolean');
+            this._sendTyping(chat.chat._id, 'isTyping boolean');
           }}
         />
       </div>
