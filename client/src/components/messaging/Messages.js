@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 
 class Messages extends Component {
+  _renderMessages = () => {
+    const { messages } = this.props;
+    console.log('In messages _renderMessages =', messages);
+
+    return messages.map(message => (
+      <li key={message._id}>{message.message}</li>
+    ));
+  };
+
   render() {
-    // const { messages } = this.props;
     return (
       <div>
         <h1>messages</h1>
+        <ul>{this._renderMessages()}</ul>
       </div>
     );
   }

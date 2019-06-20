@@ -38,12 +38,14 @@ exports.messagesGet = async (req, res) => {
   if (!chat) {
     return res.status(404).json({ error: 'Chat not found ' });
   }
-  if (!chat.userIds.includes(req.user.id)) {
+  if (!chat._userIds.includes(req.user.id)) {
     return res
       .status(401)
       .json({ error: 'You are not authorized to get messages from this chat' });
   }
-  const messages = Message.find({ _chatId: chatid }).sort({ createdAt: -1 });
+  const messages = await Message.find({ _chatId: chatid }).sort({
+    createdAt: 1
+  });
   return res.json({ messages });
 };
 
@@ -51,10 +53,13 @@ exports.createMessagePost = async (req, res) => {
   const { chatid } = req.params;
   const { message } = req.body;
   const chat = await Chat.findById(chatid);
+  console.log('In createMessagePost chatId=', chatid);
+  console.log('In createMessagePost chat=', chat);
+
   if (!chat) {
     return res.status(404).json({ error: 'Chat not found ' });
   }
-  if (!chat.userIds.includes(req.user.id)) {
+  if (!chat._userIds.includes(req.user.id)) {
     return res.status(401).json({
       error: 'You are not authorized to send messages from this chat'
     });
@@ -67,6 +72,6 @@ exports.createMessagePost = async (req, res) => {
   newMessage.save(err => {
     if (err) return res.status(500).json({ error: err });
   });
-  io.emit(MESSAGE_RECIEVED, { message: newMessage, chatId: chatId });
+  // io.emit(MESSAGE_RECIEVED, { message: newMessage, chatId: chatId });
   return res.json({ message: newMessage });
 };

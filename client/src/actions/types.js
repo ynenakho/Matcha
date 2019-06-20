@@ -37,3 +37,5 @@ export const CHAT_ERROR = 'CHAT_ERROR';
 
 export const SET_ROOM_CHAT = 'SET_ROOM_CHAT';
 export const LOADING_CHAT = 'LOADING_CHAT';
+export const DISPLAY_MESSAGE = 'DISPLAY_MESSAGE';
+export const SET_MESSAGES = 'SET_MESSAGES';

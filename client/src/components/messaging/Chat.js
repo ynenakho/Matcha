@@ -25,12 +25,18 @@ class Chat extends Component {
 
   initSocket = () => {
     // const socket = io(socketUrl);
+    const { displayMessage, chat } = this.props;
     const socket = openSocket('localhost:4000');
+    socket.emit('join', { chatId: chat.chat._id });
+
     socket.on('connect', () => {
       console.log('Connected');
     });
-    socket.on(MESSAGE_RECIEVED, ({ message, chatId }) => {
-      console.log('mesage recieved', message, chatId);
+    socket.on(MESSAGE_RECIEVED, ({ messageObj, chatId }) => {
+      console.log('mesage recieved', messageObj, chatId);
+      console.log(chat.chat);
+
+      displayMessage(messageObj);
     });
 
     this.setState({ socket });
@@ -38,20 +44,24 @@ class Chat extends Component {
 
   async componentDidMount() {
     const { id } = this.props.match.params;
-    const { getProfile, createChat, auth, profile } = this.props;
+    const { getProfile, createChat, auth, profile, getMessages } = this.props;
+    let chat;
     if (_.isEmpty(profile)) {
       let prof = await getProfile(id);
-      createChat([auth.user.id, prof._userId]);
+      chat = await createChat([auth.user.id, prof._userId]);
     } else {
-      createChat([auth.user.id, profile._userId]);
+      chat = await createChat([auth.user.id, profile._userId]);
     }
+    getMessages(chat._id);
     this.initSocket();
   }
 
-  _sendMessage = (chatId, message) => {
+  _sendMessage = async (chatId, message) => {
     const { socket } = this.state;
+    const { sendMessage } = this.props;
     console.log('In main chat sendMessage', chatId, message);
-    socket.emit(MESSAGE_SENT, { chatId, message });
+    const messageObj = await sendMessage(message, chatId);
+    socket.emit(MESSAGE_SENT, { chatId, messageObj });
   };
 
   _sendTyping = (chatId, isTyping) => {
@@ -64,16 +74,18 @@ class Chat extends Component {
     if (_.isEmpty(chat.chat)) {
       return <div>Still Getting chat set up</div>;
     }
-    console.log(chat.chat);
+    console.log('In render chatId', chat.chat._id);
 
     return (
       <div>
         <h1>Chat room with PERSON NAME</h1>
-        <Messages
-          messages={['some message1', 'some message2', 'some message3']}
-          user={'Your name'}
-          typingUser={'user is typing'}
-        />
+        {chat.messages.length ? (
+          <Messages
+            messages={chat.messages}
+            user={'Your name'}
+            typingUser={'user is typing'}
+          />
+        ) : null}
         <MessageInput
           sendMessage={message => {
             this._sendMessage(chat.chat._id, message);
