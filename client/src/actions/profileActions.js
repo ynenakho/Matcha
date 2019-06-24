@@ -20,7 +20,7 @@ export const disconnectUser = userId => dispatch => {
     .then(response => {
       dispatch({
         type: SET_PROFILE,
-        payload: response.data.profile
+        payload: response.data
       });
       dispatch({
         type: DELETE_LIKES,
@@ -41,7 +41,7 @@ export const blockUser = userId => dispatch => {
     .then(response => {
       dispatch({
         type: SET_PROFILE,
-        payload: response.data.profile
+        payload: response.data
       });
       dispatch({
         type: DELETE_LIKES,
@@ -89,7 +89,7 @@ export const likePicture = (pictureId, userId) => dispatch => {
       });
       dispatch({
         type: SET_CONNECTION,
-        payload: response.data.connected
+        payload: response.data
       });
       console.log('Response connected =', response.data.connected);
     })
@@ -127,7 +127,7 @@ export const getProfile = id => dispatch => {
     .then(response => {
       dispatch({
         type: SET_PROFILE,
-        payload: response.data.profile
+        payload: response.data
       });
       return response.data.profile;
     })

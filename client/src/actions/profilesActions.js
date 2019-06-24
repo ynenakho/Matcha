@@ -26,6 +26,25 @@ export const getBlockedProfiles = () => dispatch => {
     });
 };
 
+export const getConnectedProfiles = () => dispatch => {
+  // Get connected profiles
+  dispatch({ type: LOADING_PROFILES });
+  axios
+    .get(`/api/profiles/connected`)
+    .then(response => {
+      dispatch({
+        type: SET_PROFILES,
+        payload: response.data.profiles
+      });
+    })
+    .catch(e => {
+      dispatch({
+        type: PROFILES_ERROR,
+        payload: e.response.data.error
+      });
+    });
+};
+
 export const sortProfiles = (profiles, profile, sort) => dispatch => {
   if (sort === 'age') {
     profiles.sort((a, b) => {

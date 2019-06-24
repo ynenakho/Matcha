@@ -45,11 +45,17 @@ const LikeButton = ({
   return (
     <IconButton
       onClick={() => {
-        if (!findUserLike(auth.user, picture.likes))
-          socket.emit(LIKE, {
-            userId: picture._userId,
-            userName: auth.profile.firstName + ' ' + auth.profile.lastName
-          });
+        if (!findUserLike(auth.user, picture.likes)) {
+          const userName =
+            auth.profile.firstName && auth.profile.lastName
+              ? auth.profile.firstName + ' ' + auth.profile.lastName
+              : auth.profile.firstName
+              ? auth.profile.firstName
+              : auth.profile.lastName
+              ? auth.profile.lastName
+              : auth.user.username;
+          socket.emit(LIKE, { userId: picture._userId, userName });
+        }
         likePicture(picture._id, picture._userId);
       }}
       disabled={blocked}

@@ -12,6 +12,7 @@ import setAuthToken from './components/common/setAuthToken';
 import _ from 'lodash';
 import { NOTIFICATION_RECIEVED } from './components/common/events';
 import { withSnackbar } from 'notistack';
+import Loader from './components/common/Loader';
 
 const styles = {
   approot: {
@@ -57,7 +58,7 @@ class App extends Component {
         <div className={classes.approot}>
           <Header />
           <Container className="">
-            <div>Loading...</div>
+            <Loader />
           </Container>
 
           <Footer />

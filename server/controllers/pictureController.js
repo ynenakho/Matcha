@@ -76,6 +76,7 @@ exports.deletePicturePost = async (req, res) => {
 
 exports.likePicturePost = async (req, res) => {
   try {
+    let currentUserProfile;
     const existingLike = await Like.findOne({
       _userId: req.params.userid,
       _pictureId: req.params.pictureid,
@@ -84,6 +85,29 @@ exports.likePicturePost = async (req, res) => {
     const profile = await Profile.findOne({
       _userId: req.params.userid
     });
+    if (req.params.userid === req.user.id) {
+      currentUserProfile = profile;
+    } else {
+      currentUserProfile = await Profile.findOne({
+        _userId: req.user.id
+      });
+    }
+    //Find out if user you trying to like blocked you so hes not suppose to get notified about you liking his photos
+    // const block = Block.findOne({
+    //   _userId: req.user.id,
+    //   blockedBy: req.params.userid
+    // });
+    // const blocked = block ? true : false;
+
+    // Check for firstname and lastname in profile
+    const userName =
+      currentUserProfile.firstName && currentUserProfile.lastName
+        ? currentUserProfile.firstName + ' ' + currentUserProfile.lastName
+        : currentUserProfile.firstName
+        ? currentUserProfile.firstName
+        : currentUserProfile.lastName
+        ? currentUserProfile.lastName
+        : req.user.username;
     let connection;
     let allLikes = [];
     let allLikesBack = [];
@@ -130,7 +154,9 @@ exports.likePicturePost = async (req, res) => {
         connected:
           req.params.userid !== req.user.id && allLikes.length >= 1
             ? true
-            : false
+            : false,
+        userName
+        // blocked
       });
     } else {
       const deletedLike = await existingLike.remove();
@@ -180,7 +206,9 @@ exports.likePicturePost = async (req, res) => {
           allLikesBack.length &&
           req.params.userid !== req.user.id
             ? true
-            : false
+            : false,
+        userName
+        // blocked
       });
     }
   } catch (err) {

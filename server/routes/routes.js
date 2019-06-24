@@ -80,6 +80,11 @@ module.exports = app => {
     profilesController.blockedProfilesGet
   );
   app.get(
+    '/api/profiles/connected',
+    requireAuth,
+    profilesController.connectedProfilesGet
+  );
+  app.get(
     '/api/profiles/search',
     requireAuth,
     profilesController.searchProfilesGet

@@ -152,7 +152,20 @@ exports.blockUserPost = async (req, res) => {
     const profileReturn = profile.toJSON();
     profileReturn.blocked = block ? false : true;
     profileReturn.connected = false;
-    return res.json({ profile: profileReturn, likes });
+    const currentUserProfile = await Profile.findOne({ _userId: req.user.id });
+    const userName =
+      currentUserProfile.firstName && currentUserProfile.lastName
+        ? currentUserProfile.firstName + ' ' + currentUserProfile.lastName
+        : currentUserProfile.firstName
+        ? currentUserProfile.firstName
+        : currentUserProfile.lastName
+        ? currentUserProfile.lastName
+        : req.user.username;
+    return res.json({
+      profile: profileReturn,
+      likes,
+      userName
+    });
   } catch (err) {
     return res.status(500).send({ error: err });
   }
@@ -196,7 +209,20 @@ exports.disconnectUserPost = async (req, res) => {
     const profileReturn = profile.toJSON();
     profileReturn.blocked = false;
     profileReturn.connected = false;
-    return res.json({ profile: profileReturn, likes });
+    const currentUserProfile = await Profile.findOne({ _userId: req.user.id });
+    const userName =
+      currentUserProfile.firstName && currentUserProfile.lastName
+        ? currentUserProfile.firstName + ' ' + currentUserProfile.lastName
+        : currentUserProfile.firstName
+        ? currentUserProfile.firstName
+        : currentUserProfile.lastName
+        ? currentUserProfile.lastName
+        : req.user.username;
+    return res.json({
+      profile: profileReturn,
+      likes,
+      userName
+    });
   } catch (err) {
     return res.status(500).send({ error: err });
   }

@@ -6,6 +6,42 @@ const Like = require('../models/likeModel');
 const Block = require('../models/blockModel');
 const keys = require('../config/keys');
 
+exports.connectedProfilesGet = async (req, res) => {
+  try {
+    const profiles = await Profile.find({}).lean();
+    if (!profiles) {
+      return res.json({ profiles: [] });
+    } else {
+      const connections = await Connection.find({ connectedTo: req.user.id });
+      const returnArray = profiles.filter(profile => {
+        for (let i = 0; i < connections.length; i++) {
+          if (
+            connections[i]._userId.toString() === profile._userId.toString()
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
+      for (let i = 0; i < returnArray.length; i++) {
+        const picture = await Picture.findById(
+          returnArray[i]._profilePictureId
+        );
+        if (!picture) {
+          returnArray[i].picture = '/images/picture-default.jpg';
+        } else {
+          returnArray[i].picture = picture.path;
+        }
+        returnArray[i].connected = true;
+      }
+
+      return res.json({ profiles: returnArray });
+    }
+  } catch (err) {
+    res.status(500).send({ error: err });
+  }
+};
+
 exports.blockedProfilesGet = async (req, res) => {
   try {
     const profiles = await Profile.find({}).lean();

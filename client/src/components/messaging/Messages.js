@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Messages extends Component {
-  _renderMessages = () => {
-    const { messages, user, chatWith } = this.props;
+export const Messages = props => {
+  const _renderMessages = () => {
+    const { messages, user, chatWith } = props;
     console.log('In messages _renderMessages =', messages);
 
     return messages.map(message => (
@@ -14,14 +14,11 @@ class Messages extends Component {
     ));
   };
 
-  render() {
-    return (
-      <div>
-        <h1>messages</h1>
-        <ul>{this._renderMessages()}</ul>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <ul>{_renderMessages()}</ul>
+    </div>
+  );
+};
 
 export default Messages;

@@ -12,6 +12,11 @@ import {
   DELETE_LIKES,
   REDUCE_RATING
 } from '../actions/types';
+import {
+  DISCONNECTED_CONNECTION,
+  CONNECTED_CONNECTION
+} from '../components/common/events';
+import { socket } from '../actions/authActions';
 
 const INITIAL_STATE = {
   pictures: [],
@@ -67,15 +72,29 @@ export default (state = INITIAL_STATE, action) => {
         loading: true
       };
     case SET_CONNECTION:
-      if (state.profile.connected === true && action.payload === false) {
+      if (
+        state.profile.connected === true &&
+        action.payload.connected === false
+      ) {
         // DISCONNECT NOTIFICATION
+        socket.emit(DISCONNECTED_CONNECTION, {
+          userId: state.profile._userId,
+          userName: action.payload.userName
+        });
       }
-      if (state.profile.connected === false && action.payload === true) {
+      if (
+        state.profile.connected === false &&
+        action.payload.connected === true
+      ) {
         // CONNECT NOTIFICATION
+        socket.emit(CONNECTED_CONNECTION, {
+          userId: state.profile._userId,
+          userName: action.payload.userName
+        });
       }
       return {
         ...state,
-        profile: { ...state.profile, connected: action.payload }
+        profile: { ...state.profile, connected: action.payload.connected }
       };
     case UPLOAD_PICTURE:
       return {
@@ -120,9 +139,18 @@ export default (state = INITIAL_STATE, action) => {
         loading: false
       };
     case SET_PROFILE:
+      if (
+        state.profile.connected === true &&
+        action.payload.profile.connected === false
+      ) {
+        socket.emit(DISCONNECTED_CONNECTION, {
+          userId: state.profile._userId,
+          userName: action.payload.userName
+        });
+      }
       return {
         ...state,
-        profile: action.payload,
+        profile: action.payload.profile,
         loading: false
       };
     case CREATE_PROFILE:

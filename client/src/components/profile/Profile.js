@@ -17,6 +17,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
 import moment from 'moment';
 import _ from 'lodash';
+import Loader from '../common/Loader';
 
 const styles = theme => ({
   root: {
@@ -255,7 +256,7 @@ class Profile extends Component {
     const { profile, picture, classes, auth, match, socket } = this.props;
 
     if (profile.loading || auth.loading) {
-      return <div>Loading...</div>;
+      return <Loader />;
     } else {
       return (
         <div className={classes.root}>

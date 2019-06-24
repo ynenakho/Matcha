@@ -8,7 +8,9 @@ const {
   JOIN_APP,
   LEAVE_APP,
   PROFILE_CHECKED,
-  LIKE
+  LIKE,
+  DISCONNECTED_CONNECTION,
+  CONNECTED_CONNECTION
 } = require('../helpers/events');
 // const chatController = require('../controllers/chatController');
 
@@ -41,14 +43,28 @@ module.exports = socket => {
   socket.on(LIKE, ({ userId, userName }) => {
     console.log('got like for userId =', userId);
     socket.broadcast.to(userId).emit(NOTIFICATION_RECIEVED, {
-      notification: `Your Photo Got Liked by ${userName}`
+      notification: `${userName} liked your photo.`
+    });
+  });
+
+  socket.on(DISCONNECTED_CONNECTION, ({ userId, userName }) => {
+    console.log('got disconnected for userId =', userId);
+    socket.broadcast.to(userId).emit(NOTIFICATION_RECIEVED, {
+      notification: `${userName} got disconnected from you.`
+    });
+  });
+
+  socket.on(CONNECTED_CONNECTION, ({ userId, userName }) => {
+    console.log('got disconnected for userId =', userId);
+    socket.broadcast.to(userId).emit(NOTIFICATION_RECIEVED, {
+      notification: `${userName} liked you back. You are connected now.`
     });
   });
 
   socket.on(PROFILE_CHECKED, ({ userId, userName }) => {
     console.log('profile has beed checked userId =', userId);
     socket.broadcast.to(userId).emit(NOTIFICATION_RECIEVED, {
-      notification: `${userName} Visited Your Profile`
+      notification: `${userName} visited your profile`
     });
   });
 

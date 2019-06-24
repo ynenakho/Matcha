@@ -20,6 +20,7 @@ import ProfileItem from '../common/ProfileItem';
 import SearchBar from './SearchBar';
 import SortBar from './SortBar';
 import _ from 'lodash';
+import Loader from '../common/Loader';
 
 const styles = theme => ({
   root: {
@@ -119,6 +120,11 @@ class Search extends Component {
     getBlockedProfiles();
   };
 
+  _getConnectedProfiles = () => {
+    const { getConnectedProfiles } = this.props;
+    getConnectedProfiles();
+  };
+
   _searchProfiles = values => {
     const { searchProfiles } = this.props;
     console.log('Search by age', values);
@@ -135,17 +141,23 @@ class Search extends Component {
     sortProfiles(profiles.profiles, profile, sort);
   };
 
-  _renderSearchItems = profiles => {
-    return profiles.map(profile => (
-      <ProfileItem
-        key={profile._id}
-        profile={profile}
-        saveToHistory={this.props.saveToHistory}
-        auth={this.props.auth}
-        history={this.props.history}
-        socket={this.props.socket}
-      />
-    ));
+  _renderSearchItems = () => {
+    const { profiles, auth } = this.props;
+    if (profiles.loading || auth.loading) {
+      return <Loader />;
+    } else {
+      const profilesToRender = this._changePage(this.state.page);
+      return profilesToRender.map(profile => (
+        <ProfileItem
+          key={profile._id}
+          profile={profile}
+          saveToHistory={this.props.saveToHistory}
+          auth={this.props.auth}
+          history={this.props.history}
+          socket={this.props.socket}
+        />
+      ));
+    }
   };
 
   _changePage = page => {
@@ -201,47 +213,50 @@ class Search extends Component {
   };
 
   render() {
-    const { classes, profiles, auth } = this.props;
-    if (profiles.loading || auth.loading) {
-      return <div>Loading...</div>;
-    } else {
-      const profilesToRender = this._changePage(this.state.page);
-      return (
-        <div className={classes.root}>
-          <Grid container justify="center">
-            <Grid item xs={12} sm={10} md={8}>
-              <Typography variant="h4" component="h3" color="primary">
-                Search
-              </Typography>
-              <SearchBar searchProfiles={this._searchProfiles} />
-              <SortBar sortProfiles={this._sortProfiles} />
-              <Button
-                variant="outlined"
-                size="medium"
-                color="primary"
-                className={classes.button}
-                onClick={this._getProfiles}
-              >
-                Find Not Blocked Users
-              </Button>
-              <Button
-                variant="outlined"
-                size="medium"
-                color="primary"
-                className={classes.button}
-                onClick={this._getBlockedProfiles}
-              >
-                Find Blocked Users
-              </Button>
-              <List className={classes.list}>
-                {this._renderSearchItems(profilesToRender)}
-              </List>
-              {this._renderArrows()}
-            </Grid>
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <Grid container justify="center">
+          <Grid item xs={12} sm={10} md={8}>
+            <Typography variant="h4" component="h3" color="primary">
+              Search
+            </Typography>
+            <SearchBar searchProfiles={this._searchProfiles} />
+            <SortBar sortProfiles={this._sortProfiles} />
+            <Button
+              variant="outlined"
+              size="medium"
+              color="primary"
+              className={classes.button}
+              onClick={this._getProfiles}
+            >
+              All Users
+            </Button>
+            <Button
+              variant="outlined"
+              size="medium"
+              color="primary"
+              className={classes.button}
+              onClick={this._getBlockedProfiles}
+            >
+              Blocked Users
+            </Button>
+            <Button
+              variant="outlined"
+              size="medium"
+              color="primary"
+              className={classes.button}
+              onClick={this._getConnectedProfiles}
+            >
+              Connected Users
+            </Button>
+            <List className={classes.list}>{this._renderSearchItems()}</List>
+            {this._renderArrows()}
           </Grid>
-        </div>
-      );
-    }
+        </Grid>
+      </div>
+    );
+    // }
   }
 }
 
