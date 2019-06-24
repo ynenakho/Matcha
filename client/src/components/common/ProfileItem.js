@@ -10,6 +10,7 @@ import {
 import { blue } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+import { PROFILE_CHECKED } from '../common/events';
 
 const styles = theme => ({
   inline: {
@@ -29,9 +30,13 @@ const styles = theme => ({
 
 class ProfileItem extends Component {
   _openProfile = id => {
-    const { history, auth, saveToHistory } = this.props;
+    const { history, auth, saveToHistory, socket } = this.props;
     if (id !== auth.user.id) {
       saveToHistory(id);
+      socket.emit(PROFILE_CHECKED, {
+        userId: id,
+        userName: auth.profile.firstName + ' ' + auth.profile.lastName
+      });
       console.log('visited');
     }
     history.push(`/profile/${id}`);

@@ -26,7 +26,18 @@ exports.createChatPost = async (req, res) => {
       });
       await chat.save();
     }
-    return res.json({ chat });
+    const userId = req.user.id !== userIds[0] ? userIds[0] : userIds[1];
+    console.log('User Id in chatController =', userId);
+
+    const profile = await Profile.findOne({ _userId: userId });
+    if (!profile) {
+      return res
+        .status(500)
+        .json({
+          error: "Couldn't find profile of the user you having chat with"
+        });
+    }
+    return res.json({ chat, profile });
   } catch (err) {
     return res.status(500).json({ error: err });
   }

@@ -7,8 +7,11 @@ import jwt_decode from 'jwt-decode';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import * as authActions from './actions/authActions';
+import * as socketActions from './actions/socketActions';
 import setAuthToken from './components/common/setAuthToken';
 import _ from 'lodash';
+import { NOTIFICATION_RECIEVED } from './components/common/events';
+import { withSnackbar } from 'notistack';
 
 const styles = {
   approot: {
@@ -21,8 +24,9 @@ const styles = {
 };
 
 class App extends Component {
-  componentDidMount() {
-    const { setCurrentUser, logout } = this.props;
+  async componentDidMount() {
+    const { setCurrentUser, logout, enqueueSnackbar } = this.props;
+    // const socket = openSocket('http://localhost:4000');
     if (localStorage.jwtToken) {
       const decoded = jwt_decode(localStorage.jwtToken);
       const currentTime = Date.now();
@@ -33,8 +37,16 @@ class App extends Component {
         window.location.href = '/login';
       } else {
         // Set auth token header auth
+
         setAuthToken(localStorage.jwtToken);
-        setCurrentUser(localStorage.jwtToken, () => {});
+        const socket = await setCurrentUser(localStorage.jwtToken, () => {});
+
+        socket.on(NOTIFICATION_RECIEVED, ({ notification, userName }) => {
+          console.log('notification recieved', notification);
+          enqueueSnackbar(`${notification}`, {
+            variant: 'info'
+          });
+        });
       }
     }
   }
@@ -65,12 +77,14 @@ class App extends Component {
 
 const mapStateToProps = state => ({
   auth: state.auth
+  // socket: state.socket.socket
 });
 
 export default compose(
   withStyles(styles),
   connect(
     mapStateToProps,
-    authActions
-  )
+    { ...authActions, ...socketActions }
+  ),
+  withSnackbar
 )(App);

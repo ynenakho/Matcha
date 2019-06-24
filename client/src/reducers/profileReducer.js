@@ -67,6 +67,12 @@ export default (state = INITIAL_STATE, action) => {
         loading: true
       };
     case SET_CONNECTION:
+      if (state.profile.connected === true && action.payload === false) {
+        // DISCONNECT NOTIFICATION
+      }
+      if (state.profile.connected === false && action.payload === true) {
+        // CONNECT NOTIFICATION
+      }
       return {
         ...state,
         profile: { ...state.profile, connected: action.payload }

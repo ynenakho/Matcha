@@ -41,10 +41,10 @@ class ManagePictures extends React.Component {
   };
 
   renderPictures = () => {
-    const { pictures, blocked } = this.props;
+    const { pictures, blocked, socket } = this.props;
     return pictures.map(picture => (
       <Grid item xs={12} sm={8} key={picture._id}>
-        <PictureDiv picture={picture} blocked={blocked} />
+        <PictureDiv picture={picture} blocked={blocked} socket={socket} />
       </Grid>
     ));
   };

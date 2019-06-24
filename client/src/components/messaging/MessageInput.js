@@ -15,18 +15,28 @@ export class MessageInput extends Component {
     });
   };
 
-  render() {
+  _onSubmit = e => {
     const { message } = this.state;
     const { sendMessage } = this.props;
+    e.preventDefault();
+    this.setState({ message: '' });
+    sendMessage(message);
+  };
+
+  render() {
+    const { message } = this.state;
+    // const { sendMessage } = this.props;
     return (
       <div>
-        <input
-          type="text"
-          name="message"
-          value={message}
-          onChange={this._onChange}
-        />
-        <button onClick={() => sendMessage(message)}>SEND</button>
+        <form onSubmit={this._onSubmit}>
+          <input
+            type="text"
+            name="message"
+            value={message}
+            onChange={this._onChange}
+          />
+          <button type="submit">SEND</button>
+        </form>
       </div>
     );
   }

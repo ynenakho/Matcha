@@ -112,6 +112,7 @@ class History extends Component {
         saveToHistory={this.props.saveToHistory}
         auth={this.props.auth}
         history={this.props.history}
+        socket={this.props.socket}
       />
     ));
   };
@@ -157,7 +158,8 @@ class History extends Component {
 
 const mapStateToProps = state => ({
   visitorsHistory: state.history,
-  auth: state.auth
+  auth: state.auth,
+  socket: state.socket.socket
 });
 
 export default compose(

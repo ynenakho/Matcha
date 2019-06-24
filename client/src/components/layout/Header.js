@@ -96,7 +96,7 @@ class Header extends Component {
           >
             Profile
           </Button>
-          <Button onClick={() => logout()} color="inherit">
+          <Button onClick={() => logout(auth.user.id)} color="inherit">
             Logout
           </Button>
         </React.Fragment>

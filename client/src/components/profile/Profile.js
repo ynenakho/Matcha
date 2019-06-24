@@ -252,7 +252,7 @@ class Profile extends Component {
 
   render() {
     // const { user } = this.props.auth;
-    const { profile, picture, classes, auth, match } = this.props;
+    const { profile, picture, classes, auth, match, socket } = this.props;
 
     if (profile.loading || auth.loading) {
       return <div>Loading...</div>;
@@ -287,6 +287,7 @@ class Profile extends Component {
             open={this.state.open}
             userId={match.params.id}
             blocked={profile.profile.blocked}
+            socket={socket}
             // classes={classes}
           />
         </div>
@@ -298,7 +299,8 @@ class Profile extends Component {
 const mapStateToProps = state => ({
   auth: state.auth,
   profile: state.profile,
-  picture: state.profile.picture
+  picture: state.profile.picture,
+  socket: state.socket.socket
 });
 
 export default compose(

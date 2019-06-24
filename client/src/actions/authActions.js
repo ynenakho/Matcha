@@ -9,9 +9,14 @@ import {
   CHANGE_STATUS
   // EDIT_USER
 } from './types';
+import openSocket from 'socket.io-client';
+import { JOIN_APP, LEAVE_APP } from '../components/common/events';
 import setAuthToken from '../components/common/setAuthToken';
+import { setSocket } from './socketActions';
 import axios from 'axios';
 import moment from 'moment';
+
+export const socket = openSocket('http://localhost:4000');
 
 export const changeOnlineStatus = status => dispatch => {
   axios
@@ -75,7 +80,7 @@ export const editUser = (formValues, success, fail) => dispatch => {
 
 export const setCurrentUser = (token, success) => dispatch => {
   dispatch({ type: AUTH_LOADING });
-  axios
+  return axios
     .get('/api/current')
     .then(response => {
       dispatch({
@@ -101,6 +106,9 @@ export const setCurrentUser = (token, success) => dispatch => {
       });
       dispatch(changeOnlineStatus('online'));
       success(response.data.user.id);
+      dispatch(setSocket(socket));
+      socket.emit(JOIN_APP, { userId: response.data.user.id });
+      return socket;
     })
     .catch(e =>
       dispatch({
@@ -156,7 +164,10 @@ export const login = ({ username, password }, success, fail) => dispatch => {
     });
 };
 
-export const logout = () => dispatch => {
+export const logout = userId => dispatch => {
+  if (userId) {
+    socket.emit(LEAVE_APP, { userId });
+  }
   dispatch(
     changeOnlineStatus(
       `Last visit ${moment(new Date())

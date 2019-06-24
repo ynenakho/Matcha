@@ -2,7 +2,8 @@ import {
   SET_ROOM_CHAT,
   CHAT_ERROR,
   DISPLAY_MESSAGE,
-  SET_MESSAGES
+  SET_MESSAGES,
+  SET_PROFILE_CHATTING_WITH
 } from './types';
 import axios from 'axios';
 
@@ -13,6 +14,10 @@ export const createChat = userIds => dispatch => {
       dispatch({
         type: SET_ROOM_CHAT,
         payload: response.data.chat
+      });
+      dispatch({
+        type: SET_PROFILE_CHATTING_WITH,
+        payload: response.data.profile
       });
       return response.data.chat;
     })

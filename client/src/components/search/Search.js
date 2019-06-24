@@ -143,6 +143,7 @@ class Search extends Component {
         saveToHistory={this.props.saveToHistory}
         auth={this.props.auth}
         history={this.props.history}
+        socket={this.props.socket}
       />
     ));
   };
@@ -248,7 +249,8 @@ const mapStateToProps = state => ({
   auth: state.auth,
   // user: state.auth.user,
   profiles: state.profiles,
-  profile: state.profile.profile
+  profile: state.profile.profile,
+  socket: state.socket.socket
   // picture: state.profile.picture
 });
 

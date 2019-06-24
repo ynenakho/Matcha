@@ -2,12 +2,13 @@ import {
   SET_ROOM_CHAT,
   LOADING_CHAT,
   DISPLAY_MESSAGE,
-  SET_MESSAGES
+  SET_MESSAGES,
+  SET_PROFILE_CHATTING_WITH
 } from '../actions/types';
 
 const INITIAL_STATE = {
   chat: {},
-  chatWith: [],
+  chatWith: {},
   messages: [],
   loading: true
 };
@@ -23,6 +24,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         chat: action.payload,
+        loading: false
+      };
+    case SET_PROFILE_CHATTING_WITH:
+      return {
+        ...state,
+        chatWith: action.payload,
         loading: false
       };
     case DISPLAY_MESSAGE:

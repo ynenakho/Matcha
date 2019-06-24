@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 
 class Messages extends Component {
   _renderMessages = () => {
-    const { messages } = this.props;
+    const { messages, user, chatWith } = this.props;
     console.log('In messages _renderMessages =', messages);
 
     return messages.map(message => (
-      <li key={message._id}>{message.message}</li>
+      <li key={message._id}>
+        {(user._userId === message._userId ? user.firstName : chatWith) +
+          ': ' +
+          message.message}
+      </li>
     ));
   };
 

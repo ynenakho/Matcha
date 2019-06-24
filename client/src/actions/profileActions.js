@@ -91,6 +91,7 @@ export const likePicture = (pictureId, userId) => dispatch => {
         type: SET_CONNECTION,
         payload: response.data.connected
       });
+      console.log('Response connected =', response.data.connected);
     })
     .catch(e => {
       dispatch({
