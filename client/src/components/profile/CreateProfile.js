@@ -25,7 +25,11 @@ import {
   FormControlLabel,
   Avatar
 } from '@material-ui/core';
+// import axios from 'axios';
 // import moment from 'moment';
+// import ip from 'ip';
+import publicIp from 'public-ip';
+import Geocode from 'react-geocode';
 
 const styles = theme => ({
   root: {
@@ -100,7 +104,9 @@ export class CreateProfile extends Component {
     this.state = {
       pic64base: '',
       file: null,
-      open: false
+      open: false,
+      position: null,
+      ip: null
     };
   }
 
@@ -113,9 +119,26 @@ export class CreateProfile extends Component {
     }
     // GETTING PERMITION FOR GEOLOCATION
     window.navigator.geolocation.getCurrentPosition(
-      position => console.log(position),
+      position => {
+        this.setState({ position });
+        Geocode.fromLatLng(
+          position.coords.latitude,
+          position.coords.longitude
+          // '48.8583701',
+          // '2.2922926'
+        ).then(
+          response => {
+            const address = response.results[0].formatted_address;
+            console.log('ADRESS', address);
+          },
+          error => {
+            console.error(error);
+          }
+        );
+      },
       err => console.log(err.message)
     );
+    publicIp.v4().then(result => this.setState({ ip: result }));
   }
   componentDidUpdate(prevProps) {
     const { user } = this.props;
@@ -190,6 +213,7 @@ export class CreateProfile extends Component {
     if (profile.loading) {
       return <div>Loading...</div>;
     }
+    console.log(this.state);
     return (
       <div className={classes.root}>
         <Grid container spacing={10} justify="center" alignItems="center">

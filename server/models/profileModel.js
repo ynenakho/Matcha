@@ -15,6 +15,8 @@ const profileSchema = new Schema({
   _profilePictureId: { type: Schema.Types.ObjectId, ref: 'Picture' },
   numOfPictures: { type: Number, required: true, default: 0 },
   lastVisit: { type: String, required: true, default: 'online' },
+  latitude: { type: Number },
+  longitude: { type: Number },
   createdAt: { type: Date, required: true, default: Date.now }
 });
 
