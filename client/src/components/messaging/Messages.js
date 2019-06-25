@@ -1,22 +1,52 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import styles from './Chat.module.css';
+import moment from 'moment';
 
 export const Messages = props => {
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(scrollToBottom, [props.messages]);
+
   const _renderMessages = () => {
     const { messages, user, chatWith } = props;
     console.log('In messages _renderMessages =', messages);
+    console.log(moment(messages[0].createdAt).format('MM/DD/YY hh:mm a'));
 
+    const userName =
+      chatWith.firstName && chatWith.lastName
+        ? chatWith.firstName + ' ' + chatWith.lastName
+        : chatWith.firstName
+        ? chatWith.firstName
+        : chatWith.lastName;
     return messages.map(message => (
-      <li key={message._id}>
-        {(user._userId === message._userId ? user.firstName : chatWith) +
-          ': ' +
-          message.message}
-      </li>
+      <div
+        key={message._id}
+        className={`${styles.messagecontainer} ${user._userId ===
+          message._userId && styles.right}`}
+      >
+        <div className={styles.time}>
+          {moment(message.createdAt).format('MM/DD/YY hh:mm a')}
+        </div>
+        <div className={styles.data}>
+          <div className={styles.message}>{message.message}</div>
+          <div className={styles.name}>
+            {user._userId === message._userId ? user.firstName : userName}
+          </div>
+        </div>
+      </div>
     ));
   };
 
   return (
-    <div>
-      <ul>{_renderMessages()}</ul>
+    <div className={styles.threadcontainer}>
+      <div className={styles.thread}>
+        {_renderMessages()}
+        <div ref={messagesEndRef} />
+      </div>
     </div>
   );
 };

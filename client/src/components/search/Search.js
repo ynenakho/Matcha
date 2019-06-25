@@ -76,7 +76,7 @@ class Search extends Component {
       // profile._userId === auth.user.id
     ) {
       console.log('In did mount');
-      this._getProfiles();
+      this._getProfiles(auth.profile.sexPref);
     }
   }
 
@@ -103,15 +103,15 @@ class Search extends Component {
   //   }
   // }
 
-  _getProfiles = () => {
-    const { getProfiles, auth } = this.props;
-    if (!auth.profile.sexPref) {
-      console.log(auth.profile.sexPref);
+  _getProfiles = sexPref => {
+    const { getProfiles } = this.props;
+    if (!sexPref) {
+      console.log(sexPref);
 
       getProfiles('bisexual');
     } else {
-      console.log('2', auth.profile.sexPref);
-      getProfiles(auth.profile.sexPref);
+      console.log('2', sexPref);
+      getProfiles(sexPref);
     }
   };
 
@@ -228,7 +228,7 @@ class Search extends Component {
               size="medium"
               color="primary"
               className={classes.button}
-              onClick={this._getProfiles}
+              onClick={() => this._getProfiles()}
             >
               All Users
             </Button>

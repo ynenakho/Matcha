@@ -111,6 +111,11 @@ export class CreateProfile extends Component {
       this.props.getPicture(user.id);
       this.props.getAllPictures(user.id);
     }
+    // GETTING PERMITION FOR GEOLOCATION
+    window.navigator.geolocation.getCurrentPosition(
+      position => console.log(position),
+      err => console.log(err.message)
+    );
   }
   componentDidUpdate(prevProps) {
     const { user } = this.props;
@@ -131,6 +136,11 @@ export class CreateProfile extends Component {
 
   onSubmit = formValues => {
     const { history, enqueueSnackbar, createProfile, user } = this.props;
+    console.log(formValues.location);
+
+    if (!formValues.location) {
+      // Find location
+    }
     createProfile(
       formValues,
       () => {

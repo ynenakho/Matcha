@@ -29,14 +29,24 @@ const styles = theme => ({
 });
 
 class ProfileItem extends Component {
-  _openProfile = id => {
+  _openProfile = async id => {
     const { history, auth, saveToHistory, socket } = this.props;
     if (id !== auth.user.id) {
-      saveToHistory(id);
-      socket.emit(PROFILE_CHECKED, {
-        userId: id,
-        userName: auth.profile.firstName + ' ' + auth.profile.lastName
-      });
+      const blocked = await saveToHistory(id);
+      if (!blocked) {
+        const userName =
+          auth.profile.firstName && auth.profile.lastName
+            ? auth.profile.firstName + ' ' + auth.profile.lastName
+            : auth.profile.firstName
+            ? auth.profile.firstName
+            : auth.profile.lastName
+            ? auth.profile.lastName
+            : auth.user.username;
+        socket.emit(PROFILE_CHECKED, {
+          userId: id,
+          userName
+        });
+      }
       console.log('visited');
     }
     history.push(`/profile/${id}`);

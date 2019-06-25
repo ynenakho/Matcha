@@ -1,3 +1,4 @@
+const Block = require('../models/blockModel');
 const User = require('../models/userModel');
 const Profile = require('../models/profileModel');
 const Picture = require('../models/pictureModel');
@@ -11,11 +12,16 @@ exports.saveToHistoryPost = async (req, res) => {
       _userId: req.body.userId,
       visitedBy: req.user.id
     });
+    const block = await Block.findOne({
+      _userId: req.user.id,
+      blockedBy: req.body.userId
+    });
+    const blocked = block ? true : false;
 
     newHistoryItem.save();
     const profile = await Profile.findOne({ _userId: req.body.userId }).lean();
     profile.visitedAt = newHistoryItem.createdAt;
-    return res.json({ history: profile });
+    return res.json({ history: profile, blocked });
   } catch (err) {
     res.status(500).send({ error: err });
   }

@@ -166,6 +166,8 @@ export const login = ({ username, password }, success, fail) => dispatch => {
 
 export const logout = userId => dispatch => {
   if (userId) {
+    console.log('GOT IN HERE');
+
     socket.emit(LEAVE_APP, { userId });
   }
   dispatch(

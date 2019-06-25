@@ -23,20 +23,17 @@ export default (state = INITIAL_STATE, action) => {
     case SET_ROOM_CHAT:
       return {
         ...state,
-        chat: action.payload,
-        loading: false
+        chat: action.payload
       };
     case SET_PROFILE_CHATTING_WITH:
       return {
         ...state,
-        chatWith: action.payload,
-        loading: false
+        chatWith: action.payload
       };
     case DISPLAY_MESSAGE:
       return {
         ...state,
-        messages: [...state.messages, action.payload],
-        loading: false
+        messages: [...state.messages, action.payload]
       };
     case SET_MESSAGES:
       return {

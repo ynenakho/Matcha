@@ -9,13 +9,14 @@ import axios from 'axios';
 
 export const saveToHistory = userId => dispatch => {
   // dispatch({ type: LOADING_HISTORY });
-  axios
+  return axios
     .post(`/api/history`, { userId })
     .then(response => {
       dispatch({
         type: SAVE_TO_HISTORY,
         payload: response.data.history
       });
+      return response.data.blocked;
     })
     .catch(e => {
       dispatch({

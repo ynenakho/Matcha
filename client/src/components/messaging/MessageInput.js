@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styles from './Chat.module.css';
 
 export class MessageInput extends Component {
   constructor(props) {
@@ -27,15 +28,24 @@ export class MessageInput extends Component {
     const { message } = this.state;
     // const { sendMessage } = this.props;
     return (
-      <div>
-        <form onSubmit={this._onSubmit}>
+      <div className={styles.messageinput}>
+        <form onSubmit={this._onSubmit} className={styles.messageform}>
           <input
             type="text"
             name="message"
             value={message}
             onChange={this._onChange}
+            autoComplete="off"
+            className={styles.formcontrol}
+            placeholder="Type something..."
           />
-          <button type="submit">SEND</button>
+          <button
+            type="submit"
+            className={styles.send}
+            disabled={!message.length}
+          >
+            SEND
+          </button>
         </form>
       </div>
     );

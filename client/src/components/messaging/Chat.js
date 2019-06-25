@@ -15,8 +15,8 @@ import * as chatActions from '../../actions/chatActions';
 import * as profileActions from '../../actions/profileActions';
 import _ from 'lodash';
 
-// import styles from './Chat.module.css';
-import './Chat.module.css';
+import styles from './Chat.module.css';
+// import './Chat.module.css';
 import Loader from '../common/Loader';
 
 class Chat extends Component {
@@ -77,21 +77,29 @@ class Chat extends Component {
       return <Loader />;
     }
     console.log('In render chatId', chat.chat._id);
-
     return (
-      <div>
-        <h1>
-          Chat room with{' '}
-          {chat.chatWith.firstName + ' ' + chat.chatWith.lastName}
-        </h1>
-        {/* {chat.messages.length ? ( */}
-        <Messages
-          messages={chat.messages}
-          user={auth.profile}
-          chatWith={chat.chatWith.firstName}
-          typingUser={'user is typing'}
-        />
-        {/* ) : null} */}
+      <div className={styles.chatroom}>
+        <div className={styles.chatheader}>
+          <div className={styles.userinfo}>
+            <div className={styles.username}>
+              {'Chat with ' +
+                chat.chatWith.firstName +
+                ' ' +
+                chat.chatWith.lastName}
+            </div>
+            <div className={styles.status}>{chat.chatWith.lastVisit}</div>
+          </div>
+        </div>
+        {chat.loading ? (
+          <Loader />
+        ) : (
+          <Messages
+            messages={chat.messages}
+            user={auth.profile}
+            chatWith={chat.chatWith}
+            typingUser={'user is typing'}
+          />
+        )}
         <MessageInput
           sendMessage={message => {
             this._sendMessage(chat.chat._id, message, chat.chatWith._userId);

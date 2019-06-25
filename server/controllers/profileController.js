@@ -20,14 +20,15 @@ exports.createProfilePost = async (req, res) => {
   } = req.body;
 
   //axios get to lookup ip
-  // let ip = req.ip;
-  // if (ip.substr(0, 7) == '::ffff:') {
-  //   ip = ip.substr(7);
-  // }
-  // console.log(ip);
+  let ip = req.ip;
+  if (ip.substr(0, 7) == '::ffff:') {
+    ip = ip.substr(7);
+  }
+  console.log('IP', ip);
 
-  // const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
-  // console.log(loc.data);
+  const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
+  console.log('Location data', loc.data);
+  // console.log('Geo', navigator.geolocation);
 
   let splittedInterests = [];
   if (interests) {

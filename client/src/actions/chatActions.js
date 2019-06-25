@@ -3,7 +3,8 @@ import {
   CHAT_ERROR,
   DISPLAY_MESSAGE,
   SET_MESSAGES,
-  SET_PROFILE_CHATTING_WITH
+  SET_PROFILE_CHATTING_WITH,
+  LOADING_CHAT
 } from './types';
 import axios from 'axios';
 
@@ -52,6 +53,9 @@ export const sendMessage = (message, chatId) => dispatch => {
 };
 
 export const getMessages = chatId => dispatch => {
+  dispatch({
+    type: LOADING_CHAT
+  });
   axios
     .get(`/api/chat/messages/${chatId}`)
     .then(response => {
