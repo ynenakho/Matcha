@@ -6,6 +6,7 @@ const Picture = require('../models/pictureModel');
 const Like = require('../models/likeModel');
 const keys = require('../config/keys');
 const axios = require('axios');
+const where = require('node-where');
 
 exports.createProfilePost = async (req, res) => {
   const {
@@ -24,10 +25,10 @@ exports.createProfilePost = async (req, res) => {
   if (ip.substr(0, 7) == '::ffff:') {
     ip = ip.substr(7);
   }
-  console.log('IP', ip);
+  // console.log('IP', ip);
 
-  const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
-  console.log('Location data', loc.data);
+  // const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
+  // console.log('Location data', loc.data);
   // console.log('Geo', navigator.geolocation);
 
   let splittedInterests = [];
