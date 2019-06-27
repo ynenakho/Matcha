@@ -6,7 +6,8 @@ import {
   SET_CURRENT_PROFILE,
   SET_CURRENT_PICTURE,
   SET_CURRENT_PICTURES,
-  CHANGE_STATUS
+  CHANGE_STATUS,
+  LOGOUT
   // EDIT_USER
 } from './types';
 import openSocket from 'socket.io-client';
@@ -36,14 +37,9 @@ export const changeOnlineStatus = status => dispatch => {
 };
 
 export const editUser = (formValues, success, fail) => dispatch => {
-  // dispatch({ type: AUTH_LOADING });
   axios
     .post('/api/user/edit', formValues)
     .then(response => {
-      // dispatch({
-      //   type: AUTH_USER,
-      //   payload: response.data.token
-      // });
       localStorage.setItem('jwtToken', response.data.token);
       setAuthToken(response.data.token);
       dispatch(setCurrentUser(response.data.token, () => {}));
@@ -57,26 +53,6 @@ export const editUser = (formValues, success, fail) => dispatch => {
       fail(e.response.data.error);
     });
 };
-
-// export const getCurrentProfile = () => dispatch => {
-//   dispatch({ type: PROFILE_LOADING });
-
-//   return axios
-//     .get(`/api/profile`)
-//     .then(response => {
-//       dispatch({
-//         type: SET_CURRENT_PROFILE,
-//         payload: response.data.profile
-//       });
-//       return response.data.profile;
-//     })
-//     .catch(e => {
-//       dispatch({
-//         type: PROFILE_ERROR,
-//         payload: e.response.data.error
-//       });
-//     });
-// };
 
 export const setCurrentUser = (token, success) => dispatch => {
   dispatch({ type: AUTH_LOADING });
@@ -153,7 +129,6 @@ export const login = ({ username, password }, success, fail) => dispatch => {
       localStorage.setItem('jwtToken', response.data.token);
       setAuthToken(response.data.token);
       dispatch(setCurrentUser(response.data.token, success));
-      // success();
     })
     .catch(e => {
       dispatch({
@@ -166,8 +141,6 @@ export const login = ({ username, password }, success, fail) => dispatch => {
 
 export const logout = userId => dispatch => {
   if (userId) {
-    console.log('GOT IN HERE');
-
     socket.emit(LEAVE_APP, { userId });
   }
   dispatch(
@@ -180,12 +153,7 @@ export const logout = userId => dispatch => {
   localStorage.removeItem('jwtToken');
   setAuthToken(false);
   dispatch({
-    type: SET_CURRENT_USER,
-    payload: {}
-  });
-  dispatch({
-    type: AUTH_USER,
-    payload: ''
+    type: LOGOUT
   });
 };
 

@@ -13,9 +13,9 @@ export const Messages = props => {
 
   const _renderMessages = () => {
     const { messages, user, chatWith } = props;
-    console.log('In messages _renderMessages =', messages);
-    console.log(moment(messages[0].createdAt).format('MM/DD/YY hh:mm a'));
-
+    if (messages.length === 0) {
+      return null;
+    }
     const userName =
       chatWith.firstName && chatWith.lastName
         ? chatWith.firstName + ' ' + chatWith.lastName

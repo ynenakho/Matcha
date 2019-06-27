@@ -10,7 +10,8 @@ import {
   DELETE_PICTURE,
   SET_CONNECTION,
   DELETE_LIKES,
-  REDUCE_RATING
+  REDUCE_RATING,
+  LOGOUT
 } from '../actions/types';
 import {
   DISCONNECTED_CONNECTION,
@@ -158,6 +159,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         profile: action.payload,
         loading: false
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE
       };
     default:
       return state;

@@ -6,7 +6,8 @@ import {
   SET_CURRENT_PICTURE,
   SET_CURRENT_PICTURES,
   EDIT_USER,
-  CHANGE_STATUS
+  CHANGE_STATUS,
+  LOGOUT
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -34,7 +35,11 @@ export default (state = INITIAL_STATE, action) => {
     case CHANGE_STATUS:
       return {
         ...state,
-        profile: { ...state.profile, lastVisit: action.payload },
+
+        profile:
+          action.payload !== 'No Profile'
+            ? { ...state.profile, lastVisit: action.payload }
+            : state.profile,
         loading: false
       };
     case SET_CURRENT_USER:
@@ -66,6 +71,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         user: action.payload
         // loading: false
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE
       };
     default:
       return state;

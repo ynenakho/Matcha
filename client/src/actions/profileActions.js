@@ -10,7 +10,8 @@ import {
   DELETE_PICTURE,
   SET_CONNECTION,
   DELETE_LIKES,
-  REDUCE_RATING
+  REDUCE_RATING,
+  SET_CURRENT_PROFILE
 } from './types';
 import axios from 'axios';
 
@@ -81,8 +82,6 @@ export const likePicture = (pictureId, userId) => dispatch => {
   axios
     .post(`/api/picture/like/${pictureId}/${userId}`)
     .then(response => {
-      console.log(response.data);
-
       dispatch({
         type: LIKE_PICTURE,
         payload: response.data.like
@@ -91,7 +90,6 @@ export const likePicture = (pictureId, userId) => dispatch => {
         type: SET_CONNECTION,
         payload: response.data
       });
-      console.log('Response connected =', response.data.connected);
     })
     .catch(e => {
       dispatch({
@@ -102,7 +100,6 @@ export const likePicture = (pictureId, userId) => dispatch => {
 };
 
 export const getAllPictures = userId => dispatch => {
-  // dispatch({ type: PROFILE_LOADING });
   axios
     .get(`/api/pictures/${userId}`)
     .then(response => {
@@ -140,7 +137,6 @@ export const getProfile = id => dispatch => {
 };
 
 export const getPicture = id => dispatch => {
-  // dispatch({ type: PROFILE_LOADING });
   axios
     .get(`/api/picture/${id}`)
     .then(response => {
@@ -158,7 +154,6 @@ export const getPicture = id => dispatch => {
 };
 
 export const makeAvatarPicture = pictureId => dispatch => {
-  // dispatch({ type: PROFILE_LOADING });
   axios
     .post(`/api/picture/${pictureId}`)
     .then(response => {
@@ -175,13 +170,22 @@ export const makeAvatarPicture = pictureId => dispatch => {
     });
 };
 
-export const createProfile = (formValues, success, fail) => dispatch => {
-  // dispatch({ type: PROFILE_LOADING });
+export const createProfile = (
+  formValues,
+  success,
+  fail,
+  position,
+  ip
+) => dispatch => {
   axios
-    .post('/api/profile', { ...formValues })
+    .post('/api/profile', { ...formValues, position, ip })
     .then(response => {
       dispatch({
         type: CREATE_PROFILE,
+        payload: response.data.profile
+      });
+      dispatch({
+        type: SET_CURRENT_PROFILE,
         payload: response.data.profile
       });
       success();
@@ -196,7 +200,6 @@ export const createProfile = (formValues, success, fail) => dispatch => {
 };
 
 export const uploadPicture = (data, success, fail) => dispatch => {
-  // dispatch({ type: PROFILE_LOADING });
   axios
     .post(`/api/upload-picture`, data)
     .then(response => {

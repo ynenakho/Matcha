@@ -1,19 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { Link } from 'react-router-dom';
 import * as profilesActions from '../../actions/profilesActions';
 import * as profileActions from '../../actions/profileActions';
 import * as historyActions from '../../actions/historyActions';
-import {
-  Grid,
-  //   Avatar,
-  Typography,
-  Button,
-  List
-  //   ListItem,
-  //   ListItemText,
-  //   Divider
-} from '@material-ui/core';
+import { Grid, Typography, Button, List } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
 import ProfileItem from '../common/ProfileItem';
@@ -30,21 +20,16 @@ const styles = theme => ({
   },
   list: {
     width: '100%',
-    // maxWidth: 360,
     backgroundColor: theme.palette.background.paper
   },
   button: {
     margin: theme.spacing(2)
-    // width: '60%'
   },
   arrows: {
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: '20px'
-  },
-  pageNumber: {
-    // margin: '0px 20px 0px 20px'
   }
 });
 
@@ -59,9 +44,6 @@ class Search extends Component {
 
   componentDidMount() {
     const { auth, profiles } = this.props;
-    // if (auth.user) {
-    //   const currentProfile = await getProfile(auth.user.id);
-    // if (_.isEmpty(currentProfile)) {
     if (_.isEmpty(auth.profile)) {
       this.props.history.push({
         pathname: '/create-profile',
@@ -69,75 +51,47 @@ class Search extends Component {
           componentName: 'Create'
         }
       });
-    }
-    if (
-      _.isEmpty(profiles.profiles)
-      // profile._userId &&
-      // profile._userId === auth.user.id
-    ) {
-      console.log('In did mount');
+    } else if (_.isEmpty(profiles.profiles)) {
       this._getProfiles(auth.profile.sexPref);
     }
   }
 
-  // async componentDidUpdate(prevProps) {
-  //   const { getProfile, auth, profile, profiles } = this.props;
-  //   if (prevProps.auth.user !== auth.user) {
-  //     const currentProfile = await getProfile(auth.user.id);
-  //     if (_.isEmpty(currentProfile)) {
-  //       this.props.history.push({
-  //         pathname: '/create-profile',
-  //         state: {
-  //           componentName: 'Create'
-  //         }
-  //       });
-  //     }
-  //   }
-  //   if (
-  //     _.isEmpty(profiles.profiles) &&
-  //     prevProps.profile !== profile &&
-  //     profile._userId === auth.user.id
-  //   ) {
-  //     console.log('In did update');
-  //     this._getProfiles();
-  //   }
-  // }
-
   _getProfiles = sexPref => {
     const { getProfiles } = this.props;
+    this.setState({ page: 0 });
     if (!sexPref) {
-      console.log(sexPref);
-
       getProfiles('bisexual');
     } else {
-      console.log('2', sexPref);
       getProfiles(sexPref);
     }
   };
 
   _getBlockedProfiles = () => {
     const { getBlockedProfiles } = this.props;
+    this.setState({ page: 0 });
     getBlockedProfiles();
   };
 
   _getConnectedProfiles = () => {
     const { getConnectedProfiles } = this.props;
+    this.setState({ page: 0 });
     getConnectedProfiles();
+  };
+
+  _getLikedYouProfiles = () => {
+    const { getLikedYouProfiles } = this.props;
+    this.setState({ page: 0 });
+    getLikedYouProfiles();
   };
 
   _searchProfiles = values => {
     const { searchProfiles } = this.props;
-    console.log('Search by age', values);
+    console.log(values);
     searchProfiles(values);
   };
 
   _sortProfiles = sort => {
     const { sortProfiles, profiles, profile } = this.props;
-    console.log(
-      'Sort By',
-      sort,
-      new Date(profiles.profiles[0].birthDate).getTime()
-    );
     sortProfiles(profiles.profiles, profile, sort);
   };
 
@@ -250,23 +204,29 @@ class Search extends Component {
             >
               Connected Users
             </Button>
+            <Button
+              variant="outlined"
+              size="medium"
+              color="primary"
+              className={classes.button}
+              onClick={this._getLikedYouProfiles}
+            >
+              Liked You
+            </Button>
             <List className={classes.list}>{this._renderSearchItems()}</List>
             {this._renderArrows()}
           </Grid>
         </Grid>
       </div>
     );
-    // }
   }
 }
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  // user: state.auth.user,
   profiles: state.profiles,
-  profile: state.profile.profile,
+  profile: state.auth.profile,
   socket: state.socket.socket
-  // picture: state.profile.picture
 });
 
 export default compose(

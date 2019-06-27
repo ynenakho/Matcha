@@ -127,14 +127,11 @@ class Profile extends Component {
   };
 
   _blockUser = () => {
-    console.log('Blocked!');
     const { blockUser, match } = this.props;
     blockUser(match.params.id);
   };
 
   _disconnectUser = () => {
-    console.log('Disconnect!');
-    // DISCONNECT ACTION!!!!!
     const { disconnectUser, match } = this.props;
     disconnectUser(match.params.id);
   };
@@ -144,9 +141,7 @@ class Profile extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log();
     if (prevProps.match.params.id !== this.props.match.params.id) {
-      console.log('HERE');
       this._fetchData();
     }
   }
@@ -252,10 +247,8 @@ class Profile extends Component {
   };
 
   render() {
-    // const { user } = this.props.auth;
-    const { profile, picture, classes, auth, match, socket } = this.props;
-
-    if (profile.loading || auth.loading) {
+    const { profile, picture, classes, match, socket } = this.props;
+    if (profile.loading) {
       return <Loader />;
     } else {
       return (
@@ -265,8 +258,7 @@ class Profile extends Component {
               <Typography variant="h4" component="h3" color="primary">
                 Profile
               </Typography>
-
-              {picture && Object.keys(picture).length > 0 ? (
+              {!_.isEmpty(picture) ? (
                 <Avatar
                   alt="/img/picture-default.jpg"
                   src={picture.path}
@@ -289,7 +281,6 @@ class Profile extends Component {
             userId={match.params.id}
             blocked={profile.profile.blocked}
             socket={socket}
-            // classes={classes}
           />
         </div>
       );

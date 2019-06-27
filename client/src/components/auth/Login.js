@@ -58,8 +58,6 @@ export class Login extends Component {
   };
 
   onSubmit = formValues => {
-    console.log(formValues);
-
     const { login, history, enqueueSnackbar } = this.props;
     return login(
       formValues,

@@ -11,6 +11,7 @@ import { blue } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 import { PROFILE_CHECKED } from '../common/events';
+import geodist from 'geodist';
 
 const styles = theme => ({
   inline: {
@@ -47,10 +48,8 @@ class ProfileItem extends Component {
           userName
         });
       }
-      console.log('visited');
     }
     history.push(`/profile/${id}`);
-    console.log('Open profile', id);
   };
 
   render() {
@@ -139,7 +138,12 @@ class ProfileItem extends Component {
                'hh:mm a MM/DD/YYYY'
              )}`
             : null}
-          {profile._userId === auth.user.id ? 'This is your profile' : null}
+          {profile._userId === auth.user.id
+            ? 'This is your profile'
+            : `${geodist(
+                { lat: auth.profile.latitude, lon: auth.profile.longitude },
+                { lat: profile.latitude, lon: profile.longitude }
+              )} miles`}
         </ListItem>
         <Divider variant="inset" component="li" />
       </React.Fragment>

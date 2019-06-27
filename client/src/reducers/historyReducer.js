@@ -2,7 +2,8 @@ import {
   SAVE_TO_HISTORY,
   LOADING_HISTORY,
   SET_VISITED_HISTORY,
-  SET_VISITORS_HISTORY
+  SET_VISITORS_HISTORY,
+  LOGOUT
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -35,6 +36,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         visitors: action.payload,
         loading: false
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE
       };
     default:
       return state;

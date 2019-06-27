@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Landing from './components/landing/Landing';
 import App from './App';
@@ -10,6 +10,7 @@ import SignUp from './components/auth/SignUp';
 // import TakePicture from './components/takePicture/TakePicture';
 // import ForgotPassword from './components/auth/ForgotPassword';
 import PrivateRoute from './components/common/PrivateRoute';
+import NotFound from './components/common/NotFound';
 // import withAuth from './components/common/withAuth';
 import Profile from './components/profile/Profile';
 import CreateProfile from './components/profile/CreateProfile';
@@ -23,21 +24,24 @@ export class AppRouter extends Component {
     return (
       <BrowserRouter>
         <App>
-          <Route path="/" exact component={Landing} />
-          <Route path="/login" exact component={Login} />
-          <Route path="/signup" exact component={SignUp} />
+          <Switch>
+            <Route path="/" exact component={Landing} />
+            <Route path="/login" exact component={Login} />
+            <Route path="/signup" exact component={SignUp} />
 
-          {/* <Route path="/signout" exact component={SignOut} /> */}
-          <PrivateRoute path="/user/edit" exact component={EditUser} />
-          <PrivateRoute path="/history" exact component={History} />
-          <PrivateRoute path="/search" exact component={Search} />
-          <PrivateRoute path="/chat/:id" exact component={Chat} />
-          <PrivateRoute
-            path="/create-profile"
-            exact
-            component={CreateProfile}
-          />
-          <PrivateRoute path="/profile/:id" exact component={Profile} />
+            {/* <Route path="/signout" exact component={SignOut} /> */}
+            <PrivateRoute path="/user/edit" exact component={EditUser} />
+            <PrivateRoute path="/history" exact component={History} />
+            <PrivateRoute path="/search" exact component={Search} />
+            <PrivateRoute path="/chat/:id" exact component={Chat} />
+            <PrivateRoute
+              path="/create-profile"
+              exact
+              component={CreateProfile}
+            />
+            <PrivateRoute path="/profile/:id" exact component={Profile} />
+            <Route component={NotFound} />
+          </Switch>
         </App>
       </BrowserRouter>
     );

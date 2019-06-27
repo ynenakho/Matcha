@@ -3,7 +3,8 @@ import {
   PROFILE_ERROR,
   PROFILES_ERROR,
   HISTORY_ERROR,
-  CHAT_ERROR
+  CHAT_ERROR,
+  LOGOUT
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -40,6 +41,10 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         profile: action.payload
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE
       };
     default:
       return state;

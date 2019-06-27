@@ -3,7 +3,8 @@ import {
   LOADING_CHAT,
   DISPLAY_MESSAGE,
   SET_MESSAGES,
-  SET_PROFILE_CHATTING_WITH
+  SET_PROFILE_CHATTING_WITH,
+  LOGOUT
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -40,6 +41,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         messages: action.payload,
         loading: false
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE
       };
     default:
       return state;

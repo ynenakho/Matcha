@@ -24,9 +24,6 @@ class Chat extends Component {
     const { displayMessage, chat, socket } = this.props;
     socket.emit(LEAVE_APP, { userId });
     socket.emit(JOIN_CHAT, { chatId: chat.chat._id });
-    socket.on('connect', () => {
-      console.log('Connected');
-    });
     socket.on(MESSAGE_RECIEVED, ({ messageObj, chatId }) => {
       console.log('mesage recieved', messageObj, chatId);
       console.log(chat.chat);
@@ -36,12 +33,27 @@ class Chat extends Component {
 
   async componentDidMount() {
     const { id } = this.props.match.params;
-    const { getProfile, createChat, auth, profile, getMessages } = this.props;
+    const {
+      getProfile,
+      createChat,
+      auth,
+      profile,
+      getMessages,
+      history
+    } = this.props;
     let chat;
     if (_.isEmpty(profile)) {
       let prof = await getProfile(id);
+      if (!prof.connected) {
+        history.push(`/profile/${id}`);
+        return;
+      }
       chat = await createChat([auth.user.id, prof._userId]);
     } else {
+      if (!profile.connected) {
+        history.push(`/profile/${id}`);
+        return;
+      }
       chat = await createChat([auth.user.id, profile._userId]);
     }
     getMessages(chat._id);
@@ -76,7 +88,6 @@ class Chat extends Component {
     if (_.isEmpty(chat.chat) || _.isEmpty(chat.chatWith)) {
       return <Loader />;
     }
-    console.log('In render chatId', chat.chat._id);
     return (
       <div className={styles.chatroom}>
         <div className={styles.chatheader}>

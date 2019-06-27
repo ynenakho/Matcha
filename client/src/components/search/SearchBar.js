@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { TextField, MenuItem, Typography, Button } from '@material-ui/core';
+import { TextField, MenuItem, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -51,7 +51,9 @@ class SearchBar extends Component {
 
     this.state = {
       ageFrom: '',
-      ageTo: ''
+      ageTo: '',
+      location: '',
+      tags: ''
     };
   }
 
@@ -70,11 +72,10 @@ class SearchBar extends Component {
 
   render() {
     const { classes } = this.props;
-    const { ageTo, ageFrom } = this.state;
+    const { ageTo, ageFrom, location, tags } = this.state;
     return (
       <div className={classes.root}>
         <form className={classes.searchField}>
-          <Typography color="primary">Age:</Typography>
           <TextField
             name="ageFrom"
             label="Age From"
@@ -107,13 +108,35 @@ class SearchBar extends Component {
               </MenuItem>
             ))}
           </TextField>
+          <TextField
+            name="location"
+            label="Location"
+            className={classNames(classes.textField, classes.dense)}
+            // variant="outlined"
+
+            value={location}
+            onChange={this._handleChange}
+            type="text"
+          />
+          <TextField
+            name="tags"
+            label="Tags"
+            className={classNames(classes.textField, classes.dense)}
+            // variant="outlined"
+
+            value={tags}
+            onChange={this._handleChange}
+            type="text"
+          />
           <Button
             variant="outlined"
             size="medium"
             color="primary"
             className={classes.button}
             onClick={this._submitSearchValues}
-            disabled={ageFrom === '' && ageTo === ''}
+            disabled={
+              ageFrom === '' && ageTo === '' && location === '' && tags === ''
+            }
           >
             Search
           </Button>

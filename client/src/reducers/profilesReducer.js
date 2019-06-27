@@ -1,6 +1,7 @@
 import {
   SET_PROFILES,
-  LOADING_PROFILES
+  LOADING_PROFILES,
+  LOGOUT
   // SEARCH_PROFILES,
   // SORT_PROFILES
 } from '../actions/types';
@@ -22,6 +23,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         profiles: action.payload,
         loading: false
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE
       };
     // case SORT_PROFILES:
     //   return {

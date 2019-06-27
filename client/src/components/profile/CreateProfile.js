@@ -6,30 +6,17 @@ import renderTextField from '../common/renderTextField';
 import { withStyles } from '@material-ui/core/styles';
 import * as profileActions from '../../actions/profileActions';
 import ManagePictures from './ManagePictures';
-// import classNames from 'classnames';
 import { withSnackbar } from 'notistack';
 import {
-  // Paper,
   Typography,
   Button,
-  // FormControl,
-  // InputLabel,
-  // Select,
-  // OutlinedInput,
-  // MenuItem,
   RadioGroup,
   Radio,
-  // FormLabel,
-  // TextField,
   Grid,
   FormControlLabel,
   Avatar
 } from '@material-ui/core';
-// import axios from 'axios';
-// import moment from 'moment';
-// import ip from 'ip';
 import publicIp from 'public-ip';
-import Geocode from 'react-geocode';
 
 const styles = theme => ({
   root: {
@@ -42,22 +29,15 @@ const styles = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'center'
   },
-  form: {
-    // display: 'flex',
-    // flexDirection: 'column'
-  },
   textField: {
     width: '100%',
     margin: 'auto'
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit
   },
   dense: {
     marginTop: 16
   },
   button: {
     marginTop: theme.spacing(2)
-    // width: '60%'
   },
   formControl: {
     margin: theme.spacing(1),
@@ -76,7 +56,6 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: theme.spacing(2)
-    // float: 'right'
   },
   bigAvatar: {
     width: 200,
@@ -110,44 +89,42 @@ export class CreateProfile extends Component {
     };
   }
 
-  componentDidMount() {
-    const { profile, user } = this.props;
-    if (Object.keys(profile).length === 0 && user) {
-      this.props.getProfile(user.id);
-      this.props.getPicture(user.id);
-      this.props.getAllPictures(user.id);
-    }
+  async componentDidMount() {
+    const { profile, user, getPicture, getAllPictures } = this.props;
+    getPicture(user.id);
+    getAllPictures(user.id);
     // GETTING PERMITION FOR GEOLOCATION
-    window.navigator.geolocation.getCurrentPosition(
-      position => {
-        this.setState({ position });
-        Geocode.fromLatLng(
-          position.coords.latitude,
-          position.coords.longitude
-          // '48.8583701',
-          // '2.2922926'
-        ).then(
-          response => {
-            const address = response.results[0].formatted_address;
-            console.log('ADRESS', address);
-          },
-          error => {
-            console.error(error);
+    if (!profile.location) {
+      window.navigator.geolocation.getCurrentPosition(position =>
+        this.setState({
+          position: {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
           }
-        );
-      },
-      err => console.log(err.message)
-    );
+        })
+      );
+    }
     publicIp.v4().then(result => this.setState({ ip: result }));
   }
-  componentDidUpdate(prevProps) {
-    const { user } = this.props;
-    if (prevProps.user !== user) {
-      this.props.getProfile(user.id);
-      this.props.getPicture(user.id);
-      this.props.getAllPictures(user.id);
-    }
-  }
+
+  // async componentDidUpdate(prevProps) {
+  //   const { user } = this.props;
+  //   if (prevProps.user !== user) {
+  //     const res = await this.props.getProfile(user.id);
+  //     this.props.getPicture(user.id);
+  //     this.props.getAllPictures(user.id);
+  //     if (!res.location) {
+  //       window.navigator.geolocation.getCurrentPosition(position =>
+  //         this.setState({
+  //           position: {
+  //             lat: position.coords.latitude,
+  //             lon: position.coords.longitude
+  //           }
+  //         })
+  //       );
+  //     }
+  //   }
+  // }
 
   handleOpenModal = () => {
     this.setState({ open: true });
@@ -159,11 +136,6 @@ export class CreateProfile extends Component {
 
   onSubmit = formValues => {
     const { history, enqueueSnackbar, createProfile, user } = this.props;
-    console.log(formValues.location);
-
-    if (!formValues.location) {
-      // Find location
-    }
     createProfile(
       formValues,
       () => {
@@ -175,7 +147,9 @@ export class CreateProfile extends Component {
       text =>
         enqueueSnackbar(text, {
           variant: 'error'
-        })
+        }),
+      !formValues.location ? this.state.position : null,
+      !formValues.location && !this.state.position ? this.state.ip : null
     );
   };
 
@@ -193,7 +167,6 @@ export class CreateProfile extends Component {
           variant: 'error'
         })
     );
-
     this.setState({ file: null, pic64base: '' });
   };
 
@@ -204,16 +177,10 @@ export class CreateProfile extends Component {
       submitting,
       classes,
       picture,
-      profile
-      // pictureFile
+      location
     } = this.props;
     let componentName;
-    if (this.props.location.state)
-      componentName = this.props.location.state.componentName;
-    if (profile.loading) {
-      return <div>Loading...</div>;
-    }
-    console.log(this.state);
+    if (location.state) componentName = location.state.componentName;
     return (
       <div className={classes.root}>
         <Grid container spacing={10} justify="center" alignItems="center">
@@ -265,9 +232,6 @@ export class CreateProfile extends Component {
                 type="date"
                 component={renderTextField}
                 classes={classes}
-                // dateFormat="DD-MM-YYYY"
-
-                // className={classNames(classes.textField, classes.dense)}
                 InputLabelProps={{
                   shrink: true
                 }}
@@ -333,30 +297,6 @@ export class CreateProfile extends Component {
                     label="Male"
                     labelPlacement="start"
                   />
-                  {/* <FormControlLabel
-                    value="bisexual"
-                    control={<Radio />}
-                    label="Bisexual"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="gay"
-                    control={<Radio />}
-                    label="Gay"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="lesbian"
-                    control={<Radio />}
-                    label="Lesbian"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="transgender"
-                    control={<Radio />}
-                    label="Transgender"
-                    labelPlacement="start"
-                  /> */}
                 </Field>
                 <Field
                   classes={classes}
@@ -424,25 +364,22 @@ export class CreateProfile extends Component {
         <ManagePictures
           handleCloseModal={this.handleCloseModal}
           open={this.state.open}
-          // classes={classes}
         />
       </div>
     );
   }
 }
-// const selector = formValueSelector('createProfile');
 
 const mapStateToProps = state => ({
-  // pictureFile: selector(state, 'picture'),
   picture: state.profile.picture,
-  profile: state.profile.profile,
+  profile: state.auth.profile,
   initialValues: {
-    ...state.profile.profile,
-    interests: state.profile.profile.interests
-      ? state.profile.profile.interests.join(', ')
+    ...state.auth.profile,
+    interests: state.auth.profile.interests
+      ? state.auth.profile.interests.join(', ')
       : '',
-    birthDate: state.profile.profile.birthDate
-      ? state.profile.profile.birthDate.slice(0, 10)
+    birthDate: state.auth.profile.birthDate
+      ? state.auth.profile.birthDate.slice(0, 10)
       : null
   },
   user: state.auth.user

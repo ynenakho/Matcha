@@ -51,6 +51,7 @@ class App extends Component {
       }
     }
   }
+
   render() {
     const { children, classes, auth } = this.props;
     if ((auth.authenticated && _.isEmpty(auth.user)) || auth.loading) {

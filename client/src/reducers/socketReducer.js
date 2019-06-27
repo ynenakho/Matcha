@@ -1,4 +1,4 @@
-import { SET_SOCKET } from '../actions/types';
+import { SET_SOCKET, LOGOUT } from '../actions/types';
 
 const INITIAL_STATE = {
   socket: null
@@ -7,11 +7,13 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case SET_SOCKET:
-      console.log('SETTING SOCKET =', action.payload);
-
       return {
         ...state,
         socket: action.payload
+      };
+    case LOGOUT:
+      return {
+        ...INITIAL_STATE
       };
     default:
       return state;

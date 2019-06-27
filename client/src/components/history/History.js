@@ -5,6 +5,7 @@ import { Grid, Typography, List, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import * as historyActions from '../../actions/historyActions';
 import ProfileItem from '../common/ProfileItem';
+import Loader from '../common/Loader';
 
 const styles = theme => ({
   root: {
@@ -14,7 +15,6 @@ const styles = theme => ({
   },
   list: {
     width: '100%',
-    // maxWidth: 360,
     backgroundColor: theme.palette.background.paper
   },
   arrows: {
@@ -22,9 +22,6 @@ const styles = theme => ({
     justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: '20px'
-  },
-  pageNumber: {
-    // margin: '0px 20px 0px 20px'
   },
   header: {
     textAlign: 'center'
@@ -121,7 +118,7 @@ class History extends Component {
     const { visitors, visited, loading } = this.props.visitorsHistory;
     const { classes } = this.props;
     if (loading) {
-      return <div>Loading...</div>;
+      return <Loader />;
     }
     return (
       <div>
