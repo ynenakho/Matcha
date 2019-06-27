@@ -17,6 +17,9 @@ const profileSchema = new Schema({
   lastVisit: { type: String, required: true, default: 'online' },
   latitude: { type: Number },
   longitude: { type: Number },
+  // address: {
+
+  // },
   createdAt: { type: Date, required: true, default: Date.now }
 });
 

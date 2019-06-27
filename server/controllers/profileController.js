@@ -6,7 +6,9 @@ const Picture = require('../models/pictureModel');
 const Like = require('../models/likeModel');
 const keys = require('../config/keys');
 const axios = require('axios');
-const where = require('node-where');
+// const where = require('node-where');
+const NodeGeocoder = require('node-geocoder');
+const _ = require('lodash');
 
 exports.createProfilePost = async (req, res) => {
   const {
@@ -17,19 +19,47 @@ exports.createProfilePost = async (req, res) => {
     bio,
     location,
     interests,
-    birthDate
+    birthDate,
+    position,
+    ip
   } = req.body;
+  console.log(req.body);
 
-  //axios get to lookup ip
-  let ip = req.ip;
-  if (ip.substr(0, 7) == '::ffff:') {
-    ip = ip.substr(7);
+  const options = {
+    provider: 'google',
+    // Optional depending on the providers
+    httpAdapter: 'https', // Default
+    apiKey: keys.googleAPIKey,
+    formatter: null // 'gpx', 'string', ...
+  };
+
+  const geocoder = NodeGeocoder(options);
+  console.log('CHECK!', location, position);
+  let address;
+  let latitude;
+  let longitude;
+  if (!location && !_.isEmpty(position)) {
+    latitude = position.lat;
+    longitude = position.lon;
+    address = await geocoder.reverse({
+      lat: position.lat,
+      lon: position.lon
+    });
+    address = address[0].formattedAddress;
+  } else if (!location && ip) {
+    //Lookup ip
+    const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
+    console.log('Location data', loc.data);
+    address = `${loc.data.city}, ${loc.data.region}, ${loc.data.zip}`;
+    latitude = loc.data.lat;
+    longitude = loc.data.lon;
+  } else {
+    address = await geocoder.geocode(location);
+    console.log('HERE', address[0]);
+    latitude = address[0] ? address[0].latitude : null;
+    longitude = address[0] ? address[0].longitude : null;
+    address = address[0] ? address[0].formattedAddress : null;
   }
-  // console.log('IP', ip);
-
-  // const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
-  // console.log('Location data', loc.data);
-  // console.log('Geo', navigator.geolocation);
 
   let splittedInterests = [];
   if (interests) {
@@ -45,9 +75,11 @@ exports.createProfilePost = async (req, res) => {
       profile.gender = gender;
       profile.sexPref = sexPref;
       profile.bio = bio;
-      profile.location = location;
+      profile.location = address ? address : '';
       profile.interests = splittedInterests;
       profile.birthDate = new Date(birthDate);
+      profile.latitude = latitude;
+      profile.longitude = longitude;
     } else {
       profile = new Profile({
         _userId: req.user.id,
