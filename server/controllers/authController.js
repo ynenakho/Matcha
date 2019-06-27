@@ -45,7 +45,7 @@ exports.changeOnlineStatusPatch = async (req, res) => {
   try {
     const profile = await Profile.findOne({ _userId: req.user._id });
     if (!profile) {
-      res.json({ status: 'No Profile' });
+      return res.json({ status: 'No Profile' });
     } else {
       profile.lastVisit = status;
       profile.save();
