@@ -27,10 +27,9 @@ exports.createProfilePost = async (req, res) => {
 
   const options = {
     provider: 'google',
-    // Optional depending on the providers
-    httpAdapter: 'https', // Default
+    httpAdapter: 'https',
     apiKey: keys.googleAPIKey,
-    formatter: null // 'gpx', 'string', ...
+    formatter: null
   };
 
   const geocoder = NodeGeocoder(options);
@@ -49,13 +48,15 @@ exports.createProfilePost = async (req, res) => {
   } else if (!location && ip) {
     //Lookup ip
     const loc = await axios.get(`http://ip-api.com/json/64.62.224.29`);
-    console.log('Location data', loc.data);
-    address = `${loc.data.city}, ${loc.data.region}, ${loc.data.zip}`;
+    // console.log('Location data', loc.data);
+    address = `${loc.data.city}, ${loc.data.region}, ${
+      loc.data.countryCode === 'US' ? 'USA' : loc.data.countryCode
+    }`;
     latitude = loc.data.lat;
     longitude = loc.data.lon;
   } else {
     address = await geocoder.geocode(location);
-    console.log('HERE', address[0]);
+    // console.log('HERE', address[0]);
     latitude = address[0] ? address[0].latitude : null;
     longitude = address[0] ? address[0].longitude : null;
     address = address[0] ? address[0].formattedAddress : null;

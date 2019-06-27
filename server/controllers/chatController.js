@@ -11,15 +11,10 @@ const { MESSAGE_SENT, MESSAGE_RECIEVED } = require('../helpers/events');
 
 exports.createChatPost = async (req, res) => {
   const { userIds } = req.body;
-  // console.log(userIds);
-  // console.log(req.body);
-
   try {
     let chat = await Chat.findOne({
       $or: [{ _userIds: userIds }, { _userIds: [userIds[1], userIds[0]] }]
     });
-    // console.log('got here');
-
     if (!chat) {
       chat = new Chat({
         _userIds: [userIds[0], userIds[1]]
@@ -27,62 +22,64 @@ exports.createChatPost = async (req, res) => {
       await chat.save();
     }
     const userId = req.user.id !== userIds[0] ? userIds[0] : userIds[1];
-    console.log('User Id in chatController =', userId);
-
     const profile = await Profile.findOne({ _userId: userId });
     if (!profile) {
-      return res
-        .status(500)
-        .json({
-          error: "Couldn't find profile of the user you having chat with"
-        });
+      return res.status(500).json({
+        error: "Couldn't find profile of the user you having chat with"
+      });
     }
     return res.json({ chat, profile });
   } catch (err) {
-    return res.status(500).json({ error: err });
+    return res.status(500).json({ error: err.response });
   }
 };
 
 exports.messagesGet = async (req, res) => {
   const { chatid } = req.params;
-  const chat = await Chat.findById(chatid);
-  if (!chat) {
-    return res.status(404).json({ error: 'Chat not found ' });
+  try {
+    const chat = await Chat.findById(chatid);
+    if (!chat) {
+      return res.status(404).json({ error: 'Chat not found ' });
+    }
+    if (!chat._userIds.includes(req.user.id)) {
+      return res.status(401).json({
+        error: 'You are not authorized to get messages from this chat'
+      });
+    }
+    const messages = await Message.find({ _chatId: chatid }).sort({
+      createdAt: 1
+    });
+    return res.json({ messages });
+  } catch (err) {
+    return res.status(500).json({ error: err.response });
   }
-  if (!chat._userIds.includes(req.user.id)) {
-    return res
-      .status(401)
-      .json({ error: 'You are not authorized to get messages from this chat' });
-  }
-  const messages = await Message.find({ _chatId: chatid }).sort({
-    createdAt: 1
-  });
-  return res.json({ messages });
 };
 
 exports.createMessagePost = async (req, res) => {
   const { chatid } = req.params;
   const { message } = req.body;
-  const chat = await Chat.findById(chatid);
-  console.log('In createMessagePost chatId=', chatid);
-  console.log('In createMessagePost chat=', chat);
+  try {
+    const chat = await Chat.findById(chatid);
 
-  if (!chat) {
-    return res.status(404).json({ error: 'Chat not found ' });
-  }
-  if (!chat._userIds.includes(req.user.id)) {
-    return res.status(401).json({
-      error: 'You are not authorized to send messages from this chat'
+    if (!chat) {
+      return res.status(404).json({ error: 'Chat not found ' });
+    }
+    if (!chat._userIds.includes(req.user.id)) {
+      return res.status(401).json({
+        error: 'You are not authorized to send messages from this chat'
+      });
+    }
+    const newMessage = new Message({
+      _userId: req.user.id,
+      _chatId: chatid,
+      message
     });
+    newMessage.save(err => {
+      if (err) return res.status(500).json({ error: err });
+    });
+    // io.emit(MESSAGE_RECIEVED, { message: newMessage, chatId: chatId });
+    return res.json({ message: newMessage });
+  } catch (err) {
+    return res.status(500).json({ error: err.response });
   }
-  const newMessage = new Message({
-    _userId: req.user.id,
-    _chatId: chatid,
-    message
-  });
-  newMessage.save(err => {
-    if (err) return res.status(500).json({ error: err });
-  });
-  // io.emit(MESSAGE_RECIEVED, { message: newMessage, chatId: chatId });
-  return res.json({ message: newMessage });
 };

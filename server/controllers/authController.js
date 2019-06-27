@@ -106,7 +106,6 @@ exports.forgotPasswordPost = (req, res) => {
       existingUser.password = bcrypt.hashSync(newPassword, 10);
       existingUser.save(err => {
         if (err) return res.status(500).send({ error: err });
-
         // Send the email
         sgMail.setApiKey(keys.sendGridKey);
         const mailOptions = {
