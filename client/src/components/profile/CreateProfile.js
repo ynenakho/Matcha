@@ -14,7 +14,8 @@ import {
   Radio,
   Grid,
   FormControlLabel,
-  Avatar
+  Avatar,
+  Container
 } from '@material-ui/core';
 import publicIp from 'public-ip';
 
@@ -68,10 +69,10 @@ const renderRadioGroup = ({ classes, input, label, ...rest }) => (
   <div className={classes.radio}>
     <p>{label}:</p>
     <RadioGroup
-      {...input}
-      {...rest}
       valueselected={input.value}
       onChange={(event, value) => input.onChange(value)}
+      {...input}
+      {...rest}
     />
   </div>
 );
@@ -106,25 +107,6 @@ export class CreateProfile extends Component {
     }
     publicIp.v4().then(result => this.setState({ ip: result }));
   }
-
-  // async componentDidUpdate(prevProps) {
-  //   const { user } = this.props;
-  //   if (prevProps.user !== user) {
-  //     const res = await this.props.getProfile(user.id);
-  //     this.props.getPicture(user.id);
-  //     this.props.getAllPictures(user.id);
-  //     if (!res.location) {
-  //       window.navigator.geolocation.getCurrentPosition(position =>
-  //         this.setState({
-  //           position: {
-  //             lat: position.coords.latitude,
-  //             lon: position.coords.longitude
-  //           }
-  //         })
-  //       );
-  //     }
-  //   }
-  // }
 
   handleOpenModal = () => {
     this.setState({ open: true });
@@ -182,8 +164,8 @@ export class CreateProfile extends Component {
     let componentName;
     if (location.state) componentName = location.state.componentName;
     return (
-      <div className={classes.root}>
-        <Grid container spacing={10} justify="center" alignItems="center">
+      <Container className={classes.root}>
+        <Grid container justify="center" alignItems="center">
           <Grid item xs={12} sm={10} md={8}>
             <Typography variant="h4" component="h3" color="primary">
               {typeof componentName !== 'undefined'
@@ -365,7 +347,7 @@ export class CreateProfile extends Component {
           handleCloseModal={this.handleCloseModal}
           open={this.state.open}
         />
-      </div>
+      </Container>
     );
   }
 }
@@ -385,9 +367,14 @@ const mapStateToProps = state => ({
   user: state.auth.user
 });
 
-const validate = () => {
+const validate = ({ firstName, birthDate }) => {
   const errors = {};
-
+  if (!firstName) {
+    errors.firstName = 'First name field is required';
+  }
+  if (!birthDate) {
+    errors.birthDate = 'Birth date field is required';
+  }
   return errors;
 };
 

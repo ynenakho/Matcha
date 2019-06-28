@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { Grid, Typography, List, Button } from '@material-ui/core';
+import { Grid, Typography, List, Button, Container } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import * as historyActions from '../../actions/historyActions';
 import ProfileItem from '../common/ProfileItem';
@@ -121,8 +121,8 @@ class History extends Component {
       return <Loader />;
     }
     return (
-      <div>
-        <Grid container spacing={10} justify="center">
+      <Container>
+        <Grid container justify="center">
           <Grid item xs={12} md={6}>
             <Typography
               variant="h4"
@@ -148,7 +148,7 @@ class History extends Component {
             {this._renderArrows('visitorsPage')}
           </Grid>
         </Grid>
-      </div>
+      </Container>
     );
   }
 }

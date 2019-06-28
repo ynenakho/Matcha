@@ -6,16 +6,13 @@ import { connect } from 'react-redux';
 
 import * as authActions from '../../actions/authActions';
 
-import { Paper, Typography, Button } from '@material-ui/core';
+import { Paper, Typography, Button, Container } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import renderTextField from '../common/renderTextField';
 import { withSnackbar } from 'notistack';
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1
-  },
   paper: {
     padding: theme.spacing(2),
     textAlign: 'center',
@@ -42,7 +39,6 @@ const styles = theme => ({
 
 export class SignUp extends Component {
   onSubmit = formValues => {
-    console.log(formValues);
     const { signup, enqueueSnackbar, history } = this.props;
     return signup(
       formValues,
@@ -66,7 +62,7 @@ export class SignUp extends Component {
   render() {
     const { handleSubmit, pristine, submitting, classes } = this.props;
     return (
-      <div className={classes.root}>
+      <Container>
         <Grid container spacing={10} justify="center" alignItems="center">
           <Grid item xs={12} sm={8} md={5} lg={4}>
             <Paper className={classes.paper} elevation={2}>
@@ -112,7 +108,7 @@ export class SignUp extends Component {
             </Paper>
           </Grid>
         </Grid>
-      </div>
+      </Container>
     );
   }
 }

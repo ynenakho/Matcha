@@ -115,7 +115,7 @@ export const signup = (
     });
 
 export const login = ({ username, password }, success, fail) => dispatch => {
-  // dispatch({ type: AUTH_LOADING });
+  dispatch({ type: AUTH_LOADING });
   axios
     .post('/api/login', {
       username,
@@ -145,7 +145,7 @@ export const logout = userId => dispatch => {
   }
   dispatch(
     changeOnlineStatus(
-      `Last visit ${moment(new Date())
+      `${moment(new Date())
         .format('MM/DD/YYYY hh:mm a')
         .toString()}`
     )

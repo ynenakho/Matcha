@@ -7,14 +7,14 @@ import {
   MESSAGE_RECIEVED,
   TYPING,
   JOIN_CHAT,
-  LEAVE_CHAT,
-  JOIN_APP,
-  LEAVE_APP
+  LEAVE_CHAT
+  // JOIN_APP,
+  // LEAVE_APP
 } from '../common/events';
 import * as chatActions from '../../actions/chatActions';
 import * as profileActions from '../../actions/profileActions';
 import _ from 'lodash';
-
+import { Container } from '@material-ui/core';
 import styles from './Chat.module.css';
 // import './Chat.module.css';
 import Loader from '../common/Loader';
@@ -22,11 +22,9 @@ import Loader from '../common/Loader';
 class Chat extends Component {
   _handleSocket = userId => {
     const { displayMessage, chat, socket } = this.props;
-    socket.emit(LEAVE_APP, { userId });
+    // socket.emit(LEAVE_APP, { userId });
     socket.emit(JOIN_CHAT, { chatId: chat.chat._id });
     socket.on(MESSAGE_RECIEVED, ({ messageObj, chatId }) => {
-      console.log('mesage recieved', messageObj, chatId);
-      console.log(chat.chat);
       displayMessage(messageObj);
     });
   };
@@ -61,20 +59,26 @@ class Chat extends Component {
   }
 
   componentWillUnmount() {
-    const { chat, socket, auth } = this.props;
+    const { chat, socket } = this.props;
+    socket.off(MESSAGE_RECIEVED);
     socket.emit(LEAVE_CHAT, { chatId: chat.chat._id });
-    socket.emit(JOIN_APP, { userId: auth.user.id });
+    // socket.emit(JOIN_APP, { userId: auth.user.id });
   }
 
   _sendMessage = async (chatId, message, userId) => {
     const { sendMessage, socket, auth } = this.props;
-    console.log('In main chat sendMessage', chatId, message);
+    const userName =
+      auth.profile.firstName && auth.profile.lastName
+        ? auth.profile.firstName + ' ' + auth.profile.lastName
+        : auth.profile.firstName
+        ? auth.profile.firstName
+        : auth.profile.lastName;
     const messageObj = await sendMessage(message, chatId);
     socket.emit(MESSAGE_SENT, {
       chatId,
       messageObj,
       userId,
-      userName: auth.profile.firstName + ' ' + auth.profile.lastName
+      userName
     });
   };
 
@@ -88,16 +92,17 @@ class Chat extends Component {
     if (_.isEmpty(chat.chat) || _.isEmpty(chat.chatWith)) {
       return <Loader />;
     }
+    const userName =
+      chat.chatWith.firstName && chat.chatWith.lastName
+        ? chat.chatWith.firstName + ' ' + chat.chatWith.lastName
+        : chat.chatWith.firstName
+        ? chat.chatWith.firstName
+        : chat.chatWith.lastName;
     return (
-      <div className={styles.chatroom}>
+      <Container className={styles.chatroom}>
         <div className={styles.chatheader}>
           <div className={styles.userinfo}>
-            <div className={styles.username}>
-              {'Chat with ' +
-                chat.chatWith.firstName +
-                ' ' +
-                chat.chatWith.lastName}
-            </div>
+            <div className={styles.username}>{'Chat with ' + userName}</div>
             <div className={styles.status}>{chat.chatWith.lastVisit}</div>
           </div>
         </div>
@@ -119,7 +124,7 @@ class Chat extends Component {
             this._sendTyping(chat.chat._id, 'isTyping boolean');
           }}
         />
-      </div>
+      </Container>
     );
   }
 }

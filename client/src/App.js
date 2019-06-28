@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
 import { withStyles } from '@material-ui/core/styles';
-import { Container } from '@material-ui/core';
 import jwt_decode from 'jwt-decode';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -13,21 +10,22 @@ import _ from 'lodash';
 import { NOTIFICATION_RECIEVED } from './components/common/events';
 import { withSnackbar } from 'notistack';
 import Loader from './components/common/Loader';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 
 const styles = {
   approot: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    minHeight: 'calc(100vh - 32px)'
-    // margin: 0
+    minHeight: 'calc(100vh)',
+    width: '100%'
   }
 };
 
 class App extends Component {
   async componentDidMount() {
     const { setCurrentUser, logout, enqueueSnackbar } = this.props;
-    // const socket = openSocket('http://localhost:4000');
     if (localStorage.jwtToken) {
       const decoded = jwt_decode(localStorage.jwtToken);
       const currentTime = Date.now();
@@ -38,12 +36,9 @@ class App extends Component {
         window.location.href = '/login';
       } else {
         // Set auth token header auth
-
         setAuthToken(localStorage.jwtToken);
         const socket = await setCurrentUser(localStorage.jwtToken, () => {});
-
-        socket.on(NOTIFICATION_RECIEVED, ({ notification, userName }) => {
-          console.log('notification recieved', notification);
+        socket.on(NOTIFICATION_RECIEVED, ({ notification }) => {
           enqueueSnackbar(`${notification}`, {
             variant: 'info'
           });
@@ -58,28 +53,18 @@ class App extends Component {
       return (
         <div className={classes.approot}>
           <Header />
-          <Container className="">
-            <Loader />
-          </Container>
-
+          <Loader />
           <Footer />
         </div>
       );
     } else {
-      return (
-        <div className={classes.approot}>
-          <Header />
-          <Container className="">{children}</Container>
-          <Footer />
-        </div>
-      );
+      return <div className={classes.approot}>{children}</div>;
     }
   }
 }
 
 const mapStateToProps = state => ({
   auth: state.auth
-  // socket: state.socket.socket
 });
 
 export default compose(

@@ -11,7 +11,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
+  Container
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'redux';
@@ -21,7 +22,6 @@ import Loader from '../common/Loader';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
     textAlign: 'center',
     marginTop: '30px'
   },
@@ -252,8 +252,8 @@ class Profile extends Component {
       return <Loader />;
     } else {
       return (
-        <div className={classes.root}>
-          <Grid container spacing={10} justify="center" alignItems="center">
+        <Container className={classes.root}>
+          <Grid container justify="center" alignItems="center">
             <Grid item xs={12} sm={10} md={8}>
               <Typography variant="h4" component="h3" color="primary">
                 Profile
@@ -282,7 +282,7 @@ class Profile extends Component {
             blocked={profile.profile.blocked}
             socket={socket}
           />
-        </div>
+        </Container>
       );
     }
   }

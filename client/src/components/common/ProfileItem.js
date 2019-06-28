@@ -126,7 +126,7 @@ class ProfileItem extends Component {
                   className={classes.inline}
                   color="textPrimary"
                 >
-                  Status:
+                  Last Visit:
                 </Typography>
                 {` ${profile.lastVisit ? profile.lastVisit : 'unknown'}`}
               </React.Fragment>
@@ -137,13 +137,17 @@ class ProfileItem extends Component {
              ${moment(new Date(profile.visitedAt)).format(
                'hh:mm a MM/DD/YYYY'
              )}`
-            : null}
-          {profile._userId === auth.user.id
+            : profile._userId === auth.user.id
             ? 'This is your profile'
-            : `${geodist(
+            : geodist(
                 { lat: auth.profile.latitude, lon: auth.profile.longitude },
                 { lat: profile.latitude, lon: profile.longitude }
-              )} miles`}
+              ) >= 0
+            ? `${geodist(
+                { lat: auth.profile.latitude, lon: auth.profile.longitude },
+                { lat: profile.latitude, lon: profile.longitude }
+              )} miles`
+            : 'Distance unknown'}
         </ListItem>
         <Divider variant="inset" component="li" />
       </React.Fragment>

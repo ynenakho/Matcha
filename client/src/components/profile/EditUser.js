@@ -19,14 +19,14 @@ import {
   // RadioGroup,
   // Radio,
   // FormLabel,
-  Grid
+  Grid,
+  Container
   // FormControlLabel,
   // Avatar
 } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
     textAlign: 'center',
     marginTop: '30px'
   },
@@ -35,22 +35,15 @@ const styles = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'center'
   },
-  form: {
-    // display: 'flex',
-    // flexDirection: 'column'
-  },
   textField: {
     width: '100%',
     margin: 'auto'
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit
   },
   dense: {
     marginTop: 16
   },
   button: {
     marginTop: theme.spacing(2)
-    // width: '60%'
   },
   formControl: {
     margin: theme.spacing(1),
@@ -69,7 +62,6 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: theme.spacing(2)
-    // float: 'right'
   },
   bigAvatar: {
     width: 200,
@@ -79,13 +71,6 @@ const styles = theme => ({
 });
 
 class EditUser extends Component {
-  componentDidMount() {
-    // const { history, user } = this.props;
-    // if (!user || !Object.keys(user).length) {
-    //   history.push('/profile');
-    // }
-  }
-
   onSubmit = formValues => {
     const { editUser, history, enqueueSnackbar, auth } = this.props;
     console.log(formValues);
@@ -105,13 +90,10 @@ class EditUser extends Component {
   };
 
   render() {
-    const { classes, handleSubmit, pristine, submitting, auth } = this.props;
-    if (auth.loading) {
-      return <div>Loading...</div>;
-    }
+    const { classes, handleSubmit, pristine, submitting } = this.props;
     return (
-      <div className={classes.root}>
-        <Grid container spacing={10} justify="center" alignItems="center">
+      <Container className={classes.root}>
+        <Grid container justify="center" alignItems="center">
           <Grid item xs={12} sm={10} md={8}>
             <Typography variant="h4" component="h3" color="primary">
               Edit User
@@ -160,7 +142,7 @@ class EditUser extends Component {
             </form>
           </Grid>
         </Grid>
-      </div>
+      </Container>
     );
   }
 }

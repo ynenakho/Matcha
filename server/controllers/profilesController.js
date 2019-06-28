@@ -167,7 +167,7 @@ exports.searchProfilesGet = async (req, res) => {
   try {
     const { ageFrom, ageTo, location, rating, tags } = req.query;
     const ageToSearch = ageFrom && !ageTo ? 1000 : ageTo;
-    const ageFromSearch = ageTo && !ageFrom ? 1000 : ageFrom;
+    const ageFromSearch = ageTo && !ageFrom ? 1 : ageFrom;
     const blocks = await Block.find({ blockedBy: req.user.id });
     const profiles = await Profile.find().lean();
     if (!profiles) {
@@ -176,7 +176,7 @@ exports.searchProfilesGet = async (req, res) => {
     let returnArray;
     let latitude;
     let longitude;
-    let tagsArray;
+    let tagsArray = [];
     if (location) {
       const options = {
         provider: 'google',
@@ -186,7 +186,7 @@ exports.searchProfilesGet = async (req, res) => {
       };
       const geocoder = NodeGeocoder(options);
       const address = await geocoder.geocode(location);
-      // console.log('HERE', address[0]);
+      console.log('HERE', address[0]);
       latitude = address[0] ? address[0].latitude : null;
       longitude = address[0] ? address[0].longitude : null;
     }

@@ -12,7 +12,6 @@ const {
   DISCONNECTED_CONNECTION,
   CONNECTED_CONNECTION
 } = require('../helpers/events');
-// const chatController = require('../controllers/chatController');
 
 module.exports = socket => {
   console.log('User connected. Socket Id =', socket.id);
@@ -25,6 +24,7 @@ module.exports = socket => {
   socket.on(LEAVE_APP, ({ userId }) => {
     console.log('Left app userId =', userId);
     socket.leave(userId);
+    socket.removeAllListeners(userId);
   });
 
   socket.on(JOIN_CHAT, ({ chatId }) => {
@@ -71,7 +71,6 @@ module.exports = socket => {
   socket.on(LEAVE_CHAT, ({ chatId }) => {
     console.log('Left chat chatId =', chatId);
     socket.leave(chatId);
+    socket.removeAllListeners(chatId);
   });
 };
-
-// sendMessageToChat = sender

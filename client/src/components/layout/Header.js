@@ -15,11 +15,15 @@ import {
   Divider,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Avatar
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import SearchIcon from '@material-ui/icons/Search';
+import HistoryIcon from '@material-ui/icons/History';
+import ExitAppIcon from '@material-ui/icons/ExitToApp';
+import ProfileIcon from '@material-ui/icons/AccountBox';
+import ForwardIcon from '@material-ui/icons/Forward';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -27,16 +31,37 @@ const styles = theme => ({
     marginLeft: -12,
     marginRight: 20
   },
-
   toolbarButtons: {
     marginLeft: 'auto',
-    marginRight: -12
+    marginRight: -12,
+    [theme.breakpoints.down('xs')]: {
+      display: 'none'
+    }
   },
   list: {
     width: 250
   },
   fullList: {
     width: 'auto'
+  },
+  bigAvatar: {
+    margin: 10,
+    width: 120,
+    height: 120
+  },
+  avatarDiv: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  logo: {
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: 'auto'
+    }
+  },
+  rightIcon: {
+    marginLeft: theme.spacing(1)
   }
 });
 
@@ -52,42 +77,92 @@ class Header extends Component {
   };
 
   sideList = () => {
-    const { classes } = this.props;
-
+    const { classes, auth, logout } = this.props;
+    // console.log(auth);
+    if (auth.loading) {
+      return null;
+    }
+    if (auth.authenticated && !auth.loading) {
+      return (
+        <div>
+          <List className={classes.list}>
+            <div className={classes.avatarDiv}>
+              <Typography>{`Hello, ${auth.user.username}!`}</Typography>
+              <Avatar
+                alt="img/picture-default.jpg"
+                src={
+                  auth.picture && auth.picture.path
+                    ? auth.picture.path
+                    : '/img/picture-default.jpg'
+                }
+                className={classes.bigAvatar}
+              />
+            </div>
+          </List>
+          <Divider />
+          <List className={classes.list}>
+            <ListItem
+              button
+              key="Profile"
+              component={Link}
+              to={`/profile/${auth.user.id}`}
+            >
+              <ListItemIcon>
+                <ProfileIcon />
+              </ListItemIcon>
+              <ListItemText primary="Profile" />
+            </ListItem>
+            <ListItem button key="Search" component={Link} to={`/search`}>
+              <ListItemIcon>
+                <SearchIcon />
+              </ListItemIcon>
+              <ListItemText primary="Search" />
+            </ListItem>
+            <ListItem button key="History" component={Link} to={`/history`}>
+              <ListItemIcon>
+                <HistoryIcon />
+              </ListItemIcon>
+              <ListItemText primary="History" />
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem button key="Logout" onClick={() => logout(auth.user.id)}>
+              <ListItemIcon>
+                <ExitAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </List>
+        </div>
+      );
+    }
     return (
-      <div className={classes.list}>
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </div>
+      <List className={classes.list}>
+        <ListItem button key="Login" component={Link} to={`/login`}>
+          <ListItemIcon>
+            <ForwardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Login" />
+        </ListItem>
+        <ListItem button key="Signup" component={Link} to={`/signup`}>
+          <ListItemIcon>
+            <ForwardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Sign Up" />
+        </ListItem>
+      </List>
     );
   };
 
   renderButtons = () => {
-    const { auth, logout } = this.props;
+    const { auth, logout, classes } = this.props;
     if (auth.authenticated && auth.user) {
       return (
         <React.Fragment>
           <Button component={Link} to={`/search`} color="inherit">
             Search
+            <SearchIcon className={classes.rightIcon} />
           </Button>
           <Button
             component={Link}
@@ -95,9 +170,10 @@ class Header extends Component {
             color="inherit"
           >
             Profile
+            <ProfileIcon className={classes.rightIcon} />
           </Button>
           <Button onClick={() => logout(auth.user.id)} color="inherit">
-            Logout
+            <ExitAppIcon />
           </Button>
         </React.Fragment>
       );
@@ -129,7 +205,12 @@ class Header extends Component {
             >
               <MenuIcon />
             </IconButton>
-            <Button component={Link} to="/" color="inherit">
+            <Button
+              component={Link}
+              to="/"
+              color="inherit"
+              className={classes.logo}
+            >
               <Typography variant="h6" color="inherit" noWrap>
                 Matcha
               </Typography>

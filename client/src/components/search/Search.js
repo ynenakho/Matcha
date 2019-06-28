@@ -14,7 +14,6 @@ import Loader from '../common/Loader';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
     textAlign: 'center',
     marginTop: '30px'
   },
@@ -86,12 +85,13 @@ class Search extends Component {
 
   _searchProfiles = values => {
     const { searchProfiles } = this.props;
-    console.log(values);
+    this.setState({ page: 0 });
     searchProfiles(values);
   };
 
   _sortProfiles = sort => {
     const { sortProfiles, profiles, profile } = this.props;
+    this.setState({ page: 0 });
     sortProfiles(profiles.profiles, profile, sort);
   };
 
