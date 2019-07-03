@@ -38,7 +38,6 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing(2)
-    // width: '60%'
   }
 });
 
@@ -155,7 +154,6 @@ class Profile extends Component {
   };
 
   renderListItem = (text, value) => {
-    // const { classes } = this.props;
     return (
       <List>
         <ListItem>
@@ -237,7 +235,6 @@ class Profile extends Component {
           className={classes.button}
           component={Link}
           to={`/chat/${match.params.id}`}
-          // onClick={this._disconnectUser}
           disabled={!profile.profile.connected || profile.profile.blocked}
         >
           Message

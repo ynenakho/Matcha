@@ -5,18 +5,15 @@ import MessageInput from './MessageInput';
 import {
   MESSAGE_SENT,
   MESSAGE_RECIEVED,
-  TYPING,
+  // TYPING,
   JOIN_CHAT,
   LEAVE_CHAT
-  // JOIN_APP,
-  // LEAVE_APP
 } from '../common/events';
 import * as chatActions from '../../actions/chatActions';
 import * as profileActions from '../../actions/profileActions';
 import _ from 'lodash';
 import { Container } from '@material-ui/core';
 import styles from './Chat.module.css';
-// import './Chat.module.css';
 import Loader from '../common/Loader';
 
 class Chat extends Component {
@@ -62,7 +59,6 @@ class Chat extends Component {
     const { chat, socket } = this.props;
     socket.off(MESSAGE_RECIEVED);
     socket.emit(LEAVE_CHAT, { chatId: chat.chat._id });
-    // socket.emit(JOIN_APP, { userId: auth.user.id });
   }
 
   _sendMessage = async (chatId, message, userId) => {
@@ -82,10 +78,10 @@ class Chat extends Component {
     });
   };
 
-  _sendTyping = (chatId, isTyping) => {
-    const { socket } = this.props;
-    socket.emit(TYPING, { chatId, isTyping });
-  };
+  // _sendTyping = (chatId, isTyping) => {
+  //   const { socket } = this.props;
+  //   socket.emit(TYPING, { chatId, isTyping });
+  // };
 
   render() {
     const { chat, auth } = this.props;
@@ -120,9 +116,9 @@ class Chat extends Component {
           sendMessage={message => {
             this._sendMessage(chat.chat._id, message, chat.chatWith._userId);
           }}
-          sendTyping={isTyping => {
-            this._sendTyping(chat.chat._id, 'isTyping boolean');
-          }}
+          // sendTyping={isTyping => {
+          //   this._sendTyping(chat.chat._id, 'isTyping boolean');
+          // }}
         />
       </Container>
     );

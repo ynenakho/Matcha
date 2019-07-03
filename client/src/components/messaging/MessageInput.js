@@ -26,7 +26,6 @@ export class MessageInput extends Component {
 
   render() {
     const { message } = this.state;
-    // const { sendMessage } = this.props;
     return (
       <div className={styles.messageinput}>
         <form onSubmit={this._onSubmit} className={styles.messageform}>

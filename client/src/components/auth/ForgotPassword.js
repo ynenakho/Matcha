@@ -23,7 +23,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 class ForgotPassword extends React.Component {
   onSubmit = formValues => {
-    console.log(formValues);
     const { forgotPassword, handleClose, enqueueSnackbar } = this.props;
     forgotPassword(
       formValues,

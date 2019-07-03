@@ -10,7 +10,6 @@ const renderTextField = ({
   ...custom
 }) => (
   <TextField
-    // id="outlined-dense"
     label={label}
     className={classNames(classes.textField, classes.dense)}
     margin="dense"

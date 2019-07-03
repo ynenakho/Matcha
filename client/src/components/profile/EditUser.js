@@ -4,26 +4,9 @@ import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
 import renderTextField from '../common/renderTextField';
 import { withStyles } from '@material-ui/core/styles';
-// import * as profileActions from '../../actions/profileActions';
 import * as authActions from '../../actions/authActions';
 import { withSnackbar } from 'notistack';
-import {
-  // Paper,
-  Typography,
-  Button,
-  // FormControl,
-  // InputLabel,
-  // Select,
-  // OutlinedInput,
-  // MenuItem,
-  // RadioGroup,
-  // Radio,
-  // FormLabel,
-  Grid,
-  Container
-  // FormControlLabel,
-  // Avatar
-} from '@material-ui/core';
+import { Typography, Button, Grid, Container } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -73,7 +56,6 @@ const styles = theme => ({
 class EditUser extends Component {
   onSubmit = formValues => {
     const { editUser, history, enqueueSnackbar, auth } = this.props;
-    console.log(formValues);
     editUser(
       formValues,
       () => {
@@ -148,11 +130,8 @@ class EditUser extends Component {
 }
 
 const mapStateToProps = state => ({
-  // pictureFile: selector(state, 'picture'),
-
   auth: state.auth,
   initialValues: { ...state.auth.user }
-  // auth: state.auth
 });
 
 const validate = ({ username, email, password }) => {

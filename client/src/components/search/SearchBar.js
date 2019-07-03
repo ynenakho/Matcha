@@ -7,11 +7,9 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
   searchField: {
     display: 'flex',
-    // flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%'
-    // justifyContent: 'left'
   },
   root: {
     marginTop: '20px'
@@ -34,14 +32,8 @@ const styles = theme => ({
   form: {
     alignItems: 'center'
   },
-  // dense: {
-  //   marginTop: 16
-  // },
   button: {
     width: '90px'
-    // float: 'right'
-    // marginTop: theme.spacing.unit * 2,
-    // width: '60%'
   }
 });
 
@@ -65,9 +57,7 @@ class SearchBar extends Component {
 
   _submitSearchValues = () => {
     const { searchProfiles } = this.props;
-    // const { ageFrom, ageTo } = this.state;
     searchProfiles(this.state);
-    // console.log(this.state);
   };
 
   render() {
@@ -80,7 +70,6 @@ class SearchBar extends Component {
             name="ageFrom"
             label="Age From"
             className={classNames(classes.textField, classes.dense)}
-            // variant="outlined"
             select
             value={ageFrom}
             onChange={this._handleChange}
@@ -96,7 +85,6 @@ class SearchBar extends Component {
             name="ageTo"
             label="Age To"
             className={classNames(classes.textField, classes.dense)}
-            // variant="outlined"
             select
             value={ageTo}
             onChange={this._handleChange}
@@ -112,8 +100,6 @@ class SearchBar extends Component {
             name="location"
             label="Location"
             className={classNames(classes.textField, classes.dense)}
-            // variant="outlined"
-
             value={location}
             onChange={this._handleChange}
             type="text"
@@ -122,8 +108,6 @@ class SearchBar extends Component {
             name="tags"
             label="Tags"
             className={classNames(classes.textField, classes.dense)}
-            // variant="outlined"
-
             value={tags}
             onChange={this._handleChange}
             type="text"

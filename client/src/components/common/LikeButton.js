@@ -8,27 +8,12 @@ import LikeIcon from '@material-ui/icons/ThumbUp';
 import { LIKE } from '../common/events';
 
 const styles = theme => ({
-  // root: {
-  //   display: 'flex',
-  //   justifyContent: 'center',
-  //   alignItems: 'flex-end'
-  // },
-  icon: {
-    // margin: theme.spacing * 2
-  },
   button: {
     color: blue[500]
   }
-  // iconHover: {
-  //   margin: theme.spacing(2),
-  //   '&:hover': {
-  //     color: red[800]
-  //   }
-  // }
 });
 
 const findUserLike = (user, likes) => {
-  // console.log()
   return likes.filter(like => like.likedBy === user.id).length > 0
     ? true
     : false;

@@ -78,7 +78,6 @@ class Header extends Component {
 
   sideList = () => {
     const { classes, auth, logout } = this.props;
-    // console.log(auth);
     if (auth.loading) {
       return null;
     }

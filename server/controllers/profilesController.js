@@ -186,15 +186,12 @@ exports.searchProfilesGet = async (req, res) => {
       };
       const geocoder = NodeGeocoder(options);
       const address = await geocoder.geocode(location);
-      console.log('HERE', address[0]);
       latitude = address[0] ? address[0].latitude : null;
       longitude = address[0] ? address[0].longitude : null;
     }
     if (tags) {
       tagsArray = tags.split(' ').map(elem => elem.toLowerCase());
     }
-    console.log('got here', tagsArray);
-
     returnArray = profiles.filter(profile => {
       if (
         (ageFromSearch &&
@@ -232,8 +229,6 @@ exports.searchProfilesGet = async (req, res) => {
       }
       return true;
     });
-    console.log('got here');
-
     returnArray = returnArray.filter(profile => {
       for (let i = 0; i < blocks.length; i++) {
         if (blocks[i]._userId.toString() === profile._userId.toString()) {

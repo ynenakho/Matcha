@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  // DialogContentText,
   DialogTitle,
   Slide,
   Grid
@@ -32,14 +31,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 class ManagePictures extends React.Component {
-  componentDidMount() {
-    // const { id } = this.props.match.params;
-  }
-
-  onSubmit = () => {
-    console.log(this.props);
-  };
-
   renderPictures = () => {
     const { pictures, blocked, socket } = this.props;
     return pictures.map(picture => (
@@ -58,16 +49,12 @@ class ManagePictures extends React.Component {
         open={this.props.open}
         onClose={handleCloseModal}
         aria-labelledby="form-dialog-title"
-        // className={classes.root}
         fullWidth={true}
         maxWidth={'md'}
         className={classes.dialog}
       >
         <DialogTitle id="form-dialog-title">Pictures</DialogTitle>
         <DialogContent>
-          {/* <DialogContentText>
-            Choose a picture that you wanna use as avatar
-          </DialogContentText> */}
           <Grid container className={classes.mainGrid}>
             {this.renderPictures()}
           </Grid>
@@ -77,8 +64,6 @@ class ManagePictures extends React.Component {
             Close
           </Button>
         </DialogActions>
-        {/* </Grid>
-        </Grid> */}
       </Dialog>
     );
   }
@@ -86,7 +71,6 @@ class ManagePictures extends React.Component {
 
 const mapStateToProps = state => ({
   pictures: state.profile.pictures
-  // auth: state.auth
 });
 
 export default compose(

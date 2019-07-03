@@ -6,25 +6,11 @@ import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const styles = theme => ({
-  // root: {
-  //   display: 'flex',
-  //   justifyContent: 'center',
-  //   alignItems: 'flex-end'
-  // },
-  icon: {
-    // margin: theme.spacing * 2
-  },
   button: {
     '&:hover': {
       color: red[500]
     }
   }
-  // iconHover: {
-  //   margin: theme.spacing(2),
-  //   '&:hover': {
-  //     color: red[800]
-  //   }
-  // }
 });
 
 const DeleteButton = ({ deletePicture, pictureId, classes }) => {

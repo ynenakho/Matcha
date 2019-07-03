@@ -1,10 +1,4 @@
-import {
-  SET_PROFILES,
-  LOADING_PROFILES,
-  LOGOUT
-  // SEARCH_PROFILES,
-  // SORT_PROFILES
-} from '../actions/types';
+import { SET_PROFILES, LOADING_PROFILES, LOGOUT } from '../actions/types';
 
 const INITIAL_STATE = {
   profiles: [],
@@ -28,18 +22,6 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE
       };
-    // case SORT_PROFILES:
-    //   return {
-    //     ...state,
-    //     profiles: action.payload,
-    //     loading: false
-    //   };
-    // case SEARCH_PROFILES:
-    //   return {
-    //     ...state,
-    //     profiles: action.payload,
-    //     loading: false
-    //   };
     default:
       return state;
   }
