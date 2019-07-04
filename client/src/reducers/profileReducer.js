@@ -28,7 +28,6 @@ const INITIAL_STATE = {
 
 const getNewStateAfterLike = (state, like) => {
   const newState = Object.assign({}, state);
-  // const profile = Object.assign({}, newState.profile)
   newState.pictures = newState.pictures.map(picture => {
     if (
       picture._id === like._pictureId &&
