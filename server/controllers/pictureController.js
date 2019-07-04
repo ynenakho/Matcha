@@ -277,48 +277,49 @@ exports.uploadPicturePost = (req, res) => {
 
   s3bucket.upload(params, (err, data) => {
     if (err) return res.status(500).json({ error: err });
-  });
-  const picture = new Picture({
-    _userId: req.user.id,
-    path: s3FileURL + fileName
-  });
 
-  Profile.findOne({ _userId: req.user.id })
-    .then(profile => {
-      if (!profile) {
-        const newProfile = new Profile({
-          _profilePictureId: picture._id,
-          _userId: req.user.id,
-          numOfPictures: 1
-        });
-        picture.save((err, picture) => {
-          if (err) return res.status(500).send({ error: err });
-          newProfile.save(err => {
-            if (err) return res.status(500).send({ error: err });
-            const retPicture = picture.toObject();
-            retPicture.likes = [];
-            return res.json({ picture: retPicture });
+    const picture = new Picture({
+      _userId: req.user.id,
+      path: s3FileURL + fileName
+    });
+
+    Profile.findOne({ _userId: req.user.id })
+      .then(profile => {
+        if (!profile) {
+          const newProfile = new Profile({
+            _profilePictureId: picture._id,
+            _userId: req.user.id,
+            numOfPictures: 1
           });
-        });
-      } else if (profile.numOfPictures < 5) {
-        profile._profilePictureId = picture._id;
-        profile.numOfPictures += 1;
-        picture.save((err, picture) => {
-          if (err) return res.status(500).send({ error: err });
-          profile.save(err => {
+          picture.save((err, picture) => {
             if (err) return res.status(500).send({ error: err });
-            const retPicture = picture.toObject();
-            retPicture.likes = [];
-            return res.json({ picture: retPicture });
+            newProfile.save(err => {
+              if (err) return res.status(500).send({ error: err });
+              const retPicture = picture.toObject();
+              retPicture.likes = [];
+              return res.json({ picture: retPicture });
+            });
           });
-        });
-      } else {
-        return res.status(400).json({
-          error: 'You have reached maximum ammount of pictures uploaded'
-        });
-      }
-    })
-    .catch(err => res.status(500).json({ error: err }));
+        } else if (profile.numOfPictures < 5) {
+          profile._profilePictureId = picture._id;
+          profile.numOfPictures += 1;
+          picture.save((err, picture) => {
+            if (err) return res.status(500).send({ error: err });
+            profile.save(err => {
+              if (err) return res.status(500).send({ error: err });
+              const retPicture = picture.toObject();
+              retPicture.likes = [];
+              return res.json({ picture: retPicture });
+            });
+          });
+        } else {
+          return res.status(400).json({
+            error: 'You have reached maximum ammount of pictures uploaded'
+          });
+        }
+      })
+      .catch(err => res.status(500).json({ error: err }));
+  });
 };
 
 exports.currentPictureGet = async (req, res) => {
