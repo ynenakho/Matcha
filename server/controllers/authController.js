@@ -109,7 +109,7 @@ exports.forgotPasswordPost = (req, res) => {
         // Send the email
         sgMail.setApiKey(keys.sendGridKey);
         const mailOptions = {
-          from: 'no-reply@camagru.com',
+          from: 'no-reply@matcha.com',
           to: email,
           subject: 'Account Verification Token',
           text: `Hello, ${existingUser.username}
@@ -218,12 +218,12 @@ exports.signupPost = (req, res) => {
           //!!!!!! change to https in prod
           sgMail.setApiKey(keys.sendGridKey);
           const mailOptions = {
-            from: 'no-reply@camagru.com',
+            from: 'no-reply@matcha.com',
             to: email,
             subject: 'Account Verification Token',
             text: `Hello, ${username}\n
           Please verify your account by clicking the link:
-          http://${req.headers.host}/api/confirmation?token=${
+          https://${req.headers.host}/api/confirmation?token=${
               verificationToken.token
             }&email=${email}.`
           };
@@ -299,7 +299,7 @@ exports.resendTokenPost = (req, res) => {
         // Send the email
         sgMail.setApiKey(keys.sendGridKey);
         var mailOptions = {
-          from: 'no-reply@camagru.com',
+          from: 'no-reply@matcha.com',
           to: email,
           subject: 'Account Verification Token',
           text: `Hello, ${existingUser.username}

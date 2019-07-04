@@ -17,7 +17,7 @@ import { setSocket } from './socketActions';
 import axios from 'axios';
 import moment from 'moment';
 
-export const socket = openSocket('http://localhost:4000');
+export const socket = openSocket('https://matcha-sv.herokuapp.com/');
 
 export const changeOnlineStatus = status => dispatch => {
   axios
