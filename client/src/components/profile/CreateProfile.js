@@ -368,10 +368,13 @@ const mapStateToProps = state => ({
   user: state.auth.user
 });
 
-const validate = ({ firstName, birthDate }) => {
+const validate = ({ lastName, firstName, birthDate }) => {
   const errors = {};
   if (!firstName) {
-    errors.firstName = 'First name field is required';
+    errors.firstName = 'Firstname field is required';
+  }
+  if (!lastName) {
+    errors.lastName = 'Lastname field is required';
   }
   if (!birthDate) {
     errors.birthDate = 'Birth date field is required';
