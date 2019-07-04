@@ -4,6 +4,7 @@ module.exports = {
   sendGridKey: process.env.SEND_GRID_KEY,
   jwtTokenSecret: process.env.JWT_TOKEN_SECRET,
   clientURI: process.env.CLIENT_URI,
+  googleAPIKey: process.env.GOOGLE_API_KEY,
   S3Bucket: process.env.S3_BUCKET,
   AWSAccessKey: process.env.AWS_ACCESS_KEY_ID,
   AWSSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
