@@ -7,7 +7,8 @@ import {
   SET_CURRENT_PICTURES,
   EDIT_USER,
   CHANGE_STATUS,
-  LOGOUT
+  LOGOUT,
+  AUTH_ERROR
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -75,6 +76,11 @@ export default (state = INITIAL_STATE, action) => {
     case LOGOUT:
       return {
         ...INITIAL_STATE
+      };
+    case AUTH_ERROR:
+      return {
+        ...state,
+        loading: false
       };
     default:
       return state;

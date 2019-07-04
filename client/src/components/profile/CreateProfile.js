@@ -90,7 +90,7 @@ export class CreateProfile extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { profile, user, getPicture, getAllPictures } = this.props;
     getPicture(user.id);
     getAllPictures(user.id);
@@ -220,6 +220,7 @@ export class CreateProfile extends Component {
               />
               <input
                 type="file"
+                accept=".jpeg,.png,.jpg"
                 id="raised-button-file"
                 style={{ display: 'none' }}
                 onChange={e => {
