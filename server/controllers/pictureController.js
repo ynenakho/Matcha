@@ -9,20 +9,6 @@ const AWS = require('aws-sdk');
 var multer = require('multer');
 var multerS3 = require('multer-s3');
 
-const s3bucket = new AWS.S3({
-  accessKeyId: keys.AWSAccessKey,
-  secretAccessKey: keys.AWSSecretAccessKey,
-  region: keys.AWSRegion
-});
-
-const params = {
-  Bucket: keys.S3Bucket,
-  Key: fileName,
-  Body: file.buffer,
-  ContentType: 'image/jpeg',
-  ACL: 'public-read'
-};
-
 exports.deletePicturePost = async (req, res) => {
   try {
     const pictureToDelete = await Picture.findById(req.params.pictureid);
