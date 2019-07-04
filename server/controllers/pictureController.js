@@ -6,14 +6,32 @@ const Like = require('../models/likeModel');
 const keys = require('../config/keys');
 const fs = require('fs');
 const AWS = require('aws-sdk');
+var multer = require('multer');
+var multerS3 = require('multer-s3');
 
 exports.deletePicturePost = async (req, res) => {
   try {
     const pictureToDelete = await Picture.findById(req.params.pictureid);
-    fs.unlink('.' + pictureToDelete.path, err => {
-      if (err)
-        res.status(500).json({ error: 'Couldnt delete picture from storage' });
+    // fs.unlink('.' + pictureToDelete.path, err => {
+    //   if (err)
+    //     res.status(500).json({ error: 'Couldnt delete picture from storage' });
+    // });
+
+    const s3bucket = new AWS.S3({
+      accessKeyId: keys.AWSAccessKey,
+      secretAccessKey: keys.AWSSecretAccessKey,
+      region: keys.AWSRegion
     });
+
+    const params = {
+      Bucket: keys.S3Bucket,
+      Key: pictureToDelete.path
+    };
+
+    s3bucket.deleteObject(params, (err, data) => {
+      if (err) return res.status(500).json({ error: err });
+    });
+
     const deletedPicture = await pictureToDelete.remove();
     const likes = await Like.find({ _pictureId: req.params.pictureid });
     const profile = await Profile.findOne({ _userId: req.user.id });
@@ -239,9 +257,30 @@ exports.getAllPicturesGet = async (req, res) => {
 };
 
 exports.uploadPicturePost = (req, res) => {
+  const fileName = `${req.user.username}-${new Date().getTime()}.png`;
+  const s3FileURL = keys.AWSFileURL;
+  const file = req.file;
+
+  const s3bucket = new AWS.S3({
+    accessKeyId: keys.AWSAccessKey,
+    secretAccessKey: keys.AWSSecretAccessKey,
+    region: keys.AWSRegion
+  });
+
+  const params = {
+    Bucket: keys.S3Bucket,
+    Key: fileName,
+    Body: file.buffer,
+    ContentType: 'image/jpeg',
+    ACL: 'public-read'
+  };
+
+  s3bucket.upload(params, (err, data) => {
+    if (err) return res.status(500).json({ error: err });
+  });
   const picture = new Picture({
     _userId: req.user.id,
-    path: '/' + req.file.path
+    path: s3FileURL + fileName
   });
 
   Profile.findOne({ _userId: req.user.id })

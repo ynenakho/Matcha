@@ -4,6 +4,7 @@ const profilesController = require('../controllers/profilesController');
 const historyController = require('../controllers/historyController');
 const pictureController = require('../controllers/pictureController');
 const chatController = require('../controllers/chatController');
+const keys = require('../config/keys');
 
 const passport = require('passport');
 require('../services/passport');
@@ -11,7 +12,55 @@ require('../services/passport');
 const requireSignin = passport.authenticate('local', { session: false });
 const requireAuth = passport.authenticate('jwt', { session: false });
 
+// const s3FileURL = keys.AWSFileURL;
+
+//   const s3bucket = new AWS.S3({
+//     accessKeyId: keys.AWSAccessKey,
+//     secretAccessKey: keys.AWSSecretAccessKey,
+//     region: keys.AWSRegion
+//   });
+
+//   // const params = {
+//   //   Bucket: keys.S3Bucket,
+//   //   Key: fileName,
+//   //   Body: base64Data,
+//   //   ContentType: 'image/jpeg',
+//   //   ACL: 'public-read',
+//   //   ContentEncoding: 'base64'
+//   // };
+
+//   const fileFilter = (req, file, cb) => {
+//     if (
+//       file.mimetype === 'image/png' ||
+//       file.mimetype === 'image/jpg' ||
+//       file.mimetype === 'image/jpeg'
+//     ) {
+//       cb(null, true);
+//     } else {
+//       cb(null, false);
+//     }
+//   };
+
+// const upload = multer({
+//   storage: multerS3({
+//     s3: s3bucket,
+//     bucket: keys.S3Bucket,
+//     // metadata: function (req, file, cb) {
+//     //   cb(null, {fieldName: file.fieldname});
+//     // },
+//     key: function (req, file, cb) {
+//       cb(null, file.originalname + Date.now())
+//     }
+//   }),fileFilter: fileFilter
+
+// })
+
 module.exports = app => {
+  //   // AWS s3 upload
+  //   app.post('/upload', upload.array('upl',1), function (req, res, next) {
+  //     res.send("Uploaded!");
+  // });
+
   // Auth routes
   app.get('/api/current', requireAuth, authController.currentUserGet);
   app.patch(

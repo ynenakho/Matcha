@@ -13,14 +13,15 @@ const SocketManager = require('./services/socketManager');
 
 const app = express();
 
-const storage = multer.diskStorage({
-  destination: (req, res, cb) => {
-    cb(null, 'images');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
+const storage = multer.memoryStorage();
+// diskStorage({
+//   destination: (req, res, cb) => {
+//     cb(null, 'images');
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + '-' + file.originalname);
+//   }
+// });
 
 const fileFilter = (req, file, cb) => {
   if (
