@@ -12,6 +12,7 @@ import { withSnackbar } from 'notistack';
 import Loader from './components/common/Loader';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import { socket } from './actions/authActions';
 
 const styles = {
   approot: {
@@ -37,14 +38,14 @@ class App extends Component {
       } else {
         // Set auth token header auth
         setAuthToken(localStorage.jwtToken);
-        const socket = await setCurrentUser(localStorage.jwtToken, () => {});
-        socket.on(NOTIFICATION_RECIEVED, ({ notification }) => {
-          enqueueSnackbar(`${notification}`, {
-            variant: 'info'
-          });
-        });
+        setCurrentUser(localStorage.jwtToken, () => {});
       }
     }
+    socket.on(NOTIFICATION_RECIEVED, ({ notification }) => {
+      enqueueSnackbar(`${notification}`, {
+        variant: 'info'
+      });
+    });
   }
 
   render() {
