@@ -6,8 +6,7 @@ NodeJS Express React Redux MaterialUI
 
 ## App Deployed at
 
-Not Deployed yet: still in progress
-Coming soon...
+https://matcha-sv.herokuapp.com/
 
 ## Goal
 
