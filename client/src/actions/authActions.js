@@ -7,7 +7,7 @@ import {
   SET_CURRENT_PICTURE,
   SET_CURRENT_PICTURES,
   CHANGE_STATUS,
-  LOGOUT
+  LOGOUT,
   // EDIT_USER
 } from './types';
 import openSocket from 'socket.io-client';
@@ -19,66 +19,66 @@ import moment from 'moment';
 
 export const socket = openSocket('https://matcha-sv.herokuapp.com/');
 
-export const changeOnlineStatus = status => dispatch => {
+export const changeOnlineStatus = (status) => (dispatch) => {
   axios
     .patch('/api/changeonlinestatus', { status })
-    .then(response => {
+    .then((response) => {
       dispatch({
         type: CHANGE_STATUS,
-        payload: response.data.status
+        payload: response.data.status,
       });
     })
-    .catch(e =>
+    .catch((e) =>
       dispatch({
         type: AUTH_ERROR,
-        payload: e.response.data.error
+        payload: e.response.data.error,
       })
     );
 };
 
-export const editUser = (formValues, success, fail) => dispatch => {
+export const editUser = (formValues, success, fail) => (dispatch) => {
   axios
     .post('/api/user/edit', formValues)
-    .then(response => {
+    .then((response) => {
       localStorage.setItem('jwtToken', response.data.token);
       setAuthToken(response.data.token);
       dispatch(setCurrentUser(response.data.token, () => {}));
       success();
     })
-    .catch(e => {
+    .catch((e) => {
       dispatch({
         type: AUTH_ERROR,
-        payload: e.response.data.error
+        payload: e.response.data.error,
       });
       fail(e.response.data.error);
     });
 };
 
-export const setCurrentUser = (token, success) => dispatch => {
+export const setCurrentUser = (token, success) => (dispatch) => {
   dispatch({ type: AUTH_LOADING });
   return axios
     .get('/api/current')
-    .then(response => {
+    .then((response) => {
       dispatch({
         type: SET_CURRENT_USER,
-        payload: response.data.user
+        payload: response.data.user,
       });
       dispatch({
         type: SET_CURRENT_PROFILE,
-        payload: response.data.profile
+        payload: response.data.profile,
       });
 
       dispatch({
         type: SET_CURRENT_PICTURE,
-        payload: response.data.picture
+        payload: response.data.picture,
       });
       dispatch({
         type: SET_CURRENT_PICTURES,
-        payload: response.data.pictures
+        payload: response.data.pictures,
       });
       dispatch({
         type: AUTH_USER,
-        payload: token
+        payload: token,
       });
       dispatch(changeOnlineStatus('online'));
       success(response.data.user.id);
@@ -86,85 +86,81 @@ export const setCurrentUser = (token, success) => dispatch => {
       socket.emit(JOIN_APP, { userId: response.data.user.id });
       return socket;
     })
-    .catch(e =>
+    .catch((e) =>
       dispatch({
         type: AUTH_ERROR,
-        payload: e.response.data.error
+        payload: e.response.data.error,
       })
     );
 };
 
-export const signup = (
-  { email, password, username },
-  success,
-  fail
-) => dispatch =>
+export const signup = ({ email, password, username }, success, fail) => (
+  dispatch
+) =>
   axios
     .post('/api/signup', {
       email,
       password,
-      username
+      username,
     })
     .then(() => success())
-    .catch(e => {
+    .catch((e) => {
       dispatch({
         type: AUTH_ERROR,
-        payload: e.response.data.error
+        payload: e.response.data.error,
       });
       fail(e.response.data.error);
     });
 
-export const login = ({ username, password }, success, fail) => dispatch => {
+export const login = ({ username, password }, success, fail) => (dispatch) => {
   dispatch({ type: AUTH_LOADING });
   axios
     .post('/api/login', {
       username,
-      password
+      password,
     })
-    .then(response => {
+    .then((response) => {
       dispatch({
         type: AUTH_USER,
-        payload: response.data.token
+        payload: response.data.token,
       });
       localStorage.setItem('jwtToken', response.data.token);
       setAuthToken(response.data.token);
       dispatch(setCurrentUser(response.data.token, success));
     })
-    .catch(e => {
+    .catch((e) => {
       dispatch({
         type: AUTH_ERROR,
-        payload: e.response.data.error
+        payload: e.response.data.error,
       });
       fail('Incorrect Username/Password.');
     });
 };
 
-export const logout = userId => dispatch => {
+export const logout = (userId) => (dispatch) => {
   if (userId) {
     socket.emit(LEAVE_APP, { userId });
   }
   dispatch(
     changeOnlineStatus(
-      `${moment(new Date())
-        .format('MM/DD/YYYY hh:mm a')
-        .toString()}`
+      `${moment(new Date()).format('MM/DD/YYYY hh:mm a').toString()}`
     )
   );
   localStorage.removeItem('jwtToken');
   setAuthToken(false);
   dispatch({
-    type: LOGOUT
+    type: LOGOUT,
   });
 };
 
-export const forgotPassword = ({ email }, callback, fail) => dispatch =>
+export const forgotPassword = ({ email }, callback, fail) => (dispatch) =>
   axios
     .post('/api/forgotpassword', { email })
-    .then(response => callback())
-    .catch(e => {
+    .then((response) => callback())
+    .catch((e) => {
       dispatch({
         type: AUTH_ERROR,
-        payload: e.response.data.error
+        payload: e.response.data.error,
       });
       fail(e.response.data.error);
     });

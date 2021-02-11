@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     flexGrow: 1,
     backgroundImage: "url('/img/cover.jpg')",
@@ -14,7 +14,7 @@ const styles = theme => ({
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   text: {
     fontFamily: '"Comic Sans MS", cursive, sans-serif',
@@ -27,7 +27,7 @@ const styles = theme => ({
     fontStyle: 'normal',
     fontVariant: 'small-caps',
     textTransform: 'none',
-    marginTop: '15vh'
+    marginTop: '15vh',
   },
   link: {
     fontFamily: '"Comic Sans MS", cursive, sans-serif',
@@ -42,17 +42,17 @@ const styles = theme => ({
     textTransform: 'none',
     marginTop: '15%',
     '&:hover': {
-      textShadow: '2px 2px blue'
-    }
+      textShadow: '2px 2px blue',
+    },
   },
   wrapperDiv: {
     display: 'inline-block',
-    width: '40vw'
+    width: '40vw',
   },
   linkDiv: {
     display: 'flex',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });
 
 class Landing extends Component {
@@ -74,7 +74,7 @@ class Landing extends Component {
           <Link to="/login" className={classes.link}>
             Login
           </Link>
-          <Link to="/login" className={classes.link}>
+          <Link to="/signup" className={classes.link}>
             SignUp
           </Link>
         </div>
@@ -100,11 +100,8 @@ class Landing extends Component {
     );
   }
 }
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
-export default compose(
-  withStyles(styles),
-  connect(mapStateToProps)
-)(Landing);
+export default compose(withStyles(styles), connect(mapStateToProps))(Landing);
